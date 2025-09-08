@@ -1,0 +1,150 @@
+.calendarRoot {
+  --bg: rgba(255,255,255,0.6);
+  --glass: rgba(255,255,255,0.5);
+  --muted: #6b7280;
+  --accent: #3B82F6;
+  --radius: 12px;
+}
+
+.calendarWrap {
+  background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(245,247,250,0.6));
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: 0 6px 24px rgba(16,24,40,0.08);
+  backdrop-filter: blur(8px) saturate(120%);
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.monthTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.iconBtn {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.iconBtn:hover { background: rgba(0,0,0,0.04); }
+
+.weekHeading {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 8px 0;
+}
+
+.weekDay { text-align: center; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.dayCell {
+  min-height: 92px;
+  background: linear-gradient(180deg, var(--bg), var(--glass));
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.dayCell:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(16,24,40,0.06); }
+
+.emptyCell { background: transparent; box-shadow: none; cursor: default; }
+
+.dayInner { width: 100%; }
+
+.dateNumber {
+  font-weight: 600;
+  color: #111827;
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 8px;
+}
+
+.today { background: linear-gradient(90deg, #fff3, #f0f9ff); box-shadow: 0 2px 8px rgba(59,130,246,0.08); }
+
+.eventList { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+.eventBadge {
+  padding: 6px 8px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.72rem;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.more { font-size: 0.72rem; color: var(--muted); align-self: center }
+
+.legend { display: flex; gap: 12px; margin-top: 12px; align-items: center; flex-wrap: wrap }
+
+.legendItem { display: flex; gap: 8px; align-items: center; font-size: 0.85rem; color: var(--muted) }
+
+.legendDot { width: 12px; height: 12px; border-radius: 6px; display: inline-block }
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
+.modal {
+  width: min(760px, 92%);
+  max-height: 86vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(2,6,23,0.35);
+}
+
+.modalHeader { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #f3f4f6 }
+
+.closeBtn { border: none; background: transparent; font-size: 1rem; cursor: pointer }
+
+.modalBody { padding: 14px 18px; display: grid; gap: 12px }
+
+.eventCard { display: flex; gap: 12px; align-items: flex-start; padding: 10px; border-radius: 10px; background: #fbfdff; box-shadow: 0 2px 8px rgba(16,24,40,0.04) }
+
+.eventColor { width: 8px; height: 64px; border-radius: 6px }
+
+.eventContent h4 { margin: 0 0 6px 0 }
+
+.eventMeta { margin: 0; color: var(--muted); font-size: 0.85rem }
+
+.eventDesc { margin: 6px 0 0 0; color: #374151 }
+
+@media (max-width: 720px) {
+  .dayCell { min-height: 84px }
+  .dateNumber { width: 30px; height: 30px }
+}
