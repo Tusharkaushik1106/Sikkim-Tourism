@@ -23,6 +23,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  
 
   // Handle scroll event
   useEffect(() => {
