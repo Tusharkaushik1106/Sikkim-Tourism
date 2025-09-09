@@ -17,6 +17,7 @@ export default function Home() {
         <TestimonialsSection />
         <CtaSection />
       </div>
+
       <Footer />
     </main>
   )

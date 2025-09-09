@@ -89,6 +89,12 @@ export default function Navbar() {
                 </Link>
               )
             })}
+            <Link href="/bookings" className="text-white hover:text-orange-200 transition-colors">
+              Bookings
+            </Link>
+            <Link href="/booking-hub" className="text-white hover:text-orange-200 transition-colors">
+              Book Experience
+            </Link>
           </div>
 
           {/* Right side items */}
