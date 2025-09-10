@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X, MapPin, Calendar as CalendarIcon, Loader2 } from 'lucide-react'
 import { CulturalEvent } from '@/lib/events'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
 import Link from 'next/link'
 
 const categoryFilters = ['All', 'Festival', 'Religious', 'Cultural', 'Harvest', 'Holiday'] as const;
@@ -343,19 +342,17 @@ const BookingButton = ({ event }: { event: any }) => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="flex flex-col sm:flex-row gap-4 group"
+                        className="flex flex-col group"
                       >
-                        <div className="w-full sm:w-1/3 h-40 sm:h-auto rounded-lg overflow-hidden relative bg-gradient-to-br from-purple-200 to-indigo-300">
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-6xl">🌅</div>
+                        <div className="w-full">
+                          <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Sunday Holiday</h4>
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="text-xs font-bold text-white px-2 py-1 rounded-full bg-purple-600">
+                              Holiday
+                            </div>
+                            <span className="text-4xl">🌅</span>
                           </div>
-                          <div className="absolute top-2 left-2 text-xs font-bold text-white px-2 py-1 rounded-full bg-purple-600">
-                            Holiday
-                          </div>
-                        </div>
-                        <div className="w-full sm:w-2/3">
-                          <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100">Sunday Holiday</h4>
-                          <p className="text-gray-600 dark:text-gray-300 mt-1">
+                          <p className="text-gray-600 dark:text-gray-300">
                             Weekly day of rest and relaxation. Many businesses remain closed while families gather for leisure activities and rest.
                           </p>
                           <div className="flex items-center gap-4 mt-3 text-sm text-gray-500 dark:text-gray-400">
@@ -375,18 +372,17 @@ const BookingButton = ({ event }: { event: any }) => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="flex flex-col sm:flex-row gap-4 group"
+                        className="flex flex-col group"
                       >
-                        <div className="w-full sm:w-1/3 h-40 sm:h-auto rounded-lg overflow-hidden relative">
-                          <Image src={event.image || '/images/placeholder.jpg'} alt={event.title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
-                          <div className={cn("absolute top-2 left-2 text-xs font-bold text-white px-2 py-1 rounded-full", event.color)}>
-                            {event.category}
+                        <div className="w-full">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className={cn("text-xs font-bold text-white px-2 py-1 rounded-full", event.color)}>
+                              {event.category}
+                            </div>
                           </div>
-                        </div>
-                        <div className="w-full sm:w-2/3">
-                          <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100">{event.title}</h4>
-                          <p className="text-gray-600 dark:text-gray-300 mt-1">{event.description}</p>
-                          <div className="flex items-center gap-4 mt-3 text-sm text-gray-500 dark:text-gray-400">
+                          <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{event.title}</h4>
+                          <p className="text-gray-600 dark:text-gray-300 mb-3">{event.description}</p>
+                          <div className="flex items-center gap-4 mb-3 text-sm text-gray-500 dark:text-gray-400">
                             <div className="flex items-center gap-1.5">
                               <MapPin className="w-4 h-4" />
                               <span>{event.location}</span>

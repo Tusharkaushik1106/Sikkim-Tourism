@@ -14,7 +14,7 @@ const navigation = [
   { name: 'Home', href: '/', icon: <FiHome className="h-4 w-4" /> },
   { name: 'Virtual Tours', href: '/virtual-tours', icon: <FiCamera className="h-4 w-4" /> },
   { name: 'Interactive Map', href: '/map', icon: <FiMapPin className="h-4 w-4" /> },
-  { name: 'Digital Archives', href: '/archives', icon: <FiBookOpen className="h-4 w-4" /> },
+  { name: 'Digital Archives', href: '/archive', icon: <FiBookOpen className="h-4 w-4" /> },
   { name: 'Cultural Calendar', href: '/calendar', icon: <FiCalendar className="h-4 w-4" /> },
   { name: 'About', href: '/about', icon: <FiInfo className="h-4 w-4" /> },
 ]

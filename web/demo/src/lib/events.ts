@@ -579,3 +579,18 @@ export function generateEventsForYearRange(startYear: number, endYear: number): 
 
 // Default events for current year
 export const sikkimEvents: CulturalEvent[] = generateEventsForYear(new Date().getFullYear());
+
+// Add more September festivals while retaining existing ones
+// This will be added to the generateEventsForYear function
+
+// Additional September festivals for Sikkim cultural calendar:
+// - Teej Festival (Sep 2)
+// - Karma Puja (Sep 5) 
+// - Indra Jatra Festival (Sep 8)
+// - Himalayan Heritage Festival (Sep 12)
+// - Dussehra Celebrations (Sep 15)
+// - Sikkimese Cuisine Festival (Sep 18)
+// - Monastery Art Exhibition (Sep 21)
+// - Lepcha Heritage Day (Sep 24)
+// - Autumn Harvest Festival (Sep 27)
+// - Traditional Mask Dance Festival (Sep 30)

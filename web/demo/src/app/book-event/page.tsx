@@ -120,7 +120,7 @@ export default function BookingPage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Calendar className="h-5 w-5 text-blue-600" />
-                    <div>
+                    <div className='text-black'>
                       <p className="font-medium">Date</p>
                       <p className="text-gray-600">{new Date(event.date).toLocaleDateString('en-US', {
                         weekday: 'long',
@@ -132,7 +132,7 @@ export default function BookingPage() {
                   </div>
 
                   {event.time && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 text-black">
                       <Clock className="h-5 w-5 text-blue-600" />
                       <div>
                         <p className="font-medium">Time</p>
@@ -144,7 +144,7 @@ export default function BookingPage() {
                   <div className="flex items-center gap-3">
                     <MapPin className="h-5 w-5 text-blue-600" />
                     <div>
-                      <p className="font-medium">Location</p>
+                      <p className="font-medium text-black">Location</p>
                       <p className="text-gray-600">{event.location}</p>
                     </div>
                   </div>
@@ -153,7 +153,7 @@ export default function BookingPage() {
                     <div className="flex items-center gap-3">
                       <Clock className="h-5 w-5 text-blue-600" />
                       <div>
-                        <p className="font-medium">Duration</p>
+                        <p className="font-medium text-black">Duration</p>
                         <p className="text-gray-600">{event.duration}</p>
                       </div>
                     </div>
@@ -162,7 +162,7 @@ export default function BookingPage() {
                   <div className="flex items-center gap-3">
                     <Users className="h-5 w-5 text-blue-600" />
                     <div>
-                      <p className="font-medium">Availability</p>
+                      <p className="font-medium text-black">Availability</p>
                       <p className="text-gray-600">
                         {event.availableSlots} of {event.maxParticipants} slots available
                       </p>

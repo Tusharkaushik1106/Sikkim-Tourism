@@ -2,6 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fix total amount text colors in booking modals */
+.bg-blue-50 span,
+.bg-green-50 span {
+  color: #111827 !important; /* Force dark text */
+}
+
+.bg-blue-50 .text-lg,
+.bg-green-50 .text-lg {
+  color: #111827 !important; /* Force dark text for large text */
+}
+
+/* Booking modal specific overrides */
+[role="dialog"] .bg-blue-50 *,
+[role="dialog"] .bg-green-50 * {
+  color: #111827 !important;
+}
+
+/* Total amount styling */
+.total-amount-section {
+  color: #111827 !important;
+}
+
+.total-amount-section span {
+  color: #111827 !important;
+}
+
+/* Event details section fixes */
+.event-details h1,
+.event-details h2,
+.event-details h3 {
+  color: #111827 !important; /* Dark headings */
+}
+
+.event-details p {
+  color: #374151 !important; /* Medium-dark text */
+}
+
+.event-details .text-sm {
+  color: #374151 !important; /* Medium-dark for small text */
+}
+
+.event-details .text-gray-600,
+.event-details .text-gray-500 {
+  color: #4b5563 !important; /* Medium gray for labels */
+}
+
+/* Event info box in booking modal */
+.bg-gray-50 h3 {
+  color: #111827 !important; /* Dark event title */
+}
+
+.bg-gray-50 .text-sm {
+  color: #374151 !important; /* Medium-dark for event details */
+}
+
+.bg-gray-50 span {
+  color: #374151 !important; /* Medium-dark for event info */
+}
+
+/* Calendar event details */
+.calendar-event-details h1,
+.calendar-event-details h2 {
+  color: #111827 !important; /* Dark titles */
+}
+
+.calendar-event-details p {
+  color: #374151 !important; /* Medium-dark descriptions */
+}
+
+.calendar-event-details .text-gray-600 {
+  color: #4b5563 !important; /* Medium gray for meta info */
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
