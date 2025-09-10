@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, X, MapPin, Calendar as CalendarIcon, Loader2
 import { CulturalEvent } from '@/lib/events'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const categoryFilters = ['All', 'Festival', 'Religious', 'Cultural', 'Harvest', 'Holiday'] as const;
 type Category = typeof categoryFilters[number];
@@ -65,7 +66,24 @@ export default function CulturalCalendar() {
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
 
+// Add this function to generate booking links only for Sikkim events
+const BookingButton = ({ event }: { event: any }) => {
+  // Check if event is Sikkim-related
+  const isSikkimEvent = event.location?.toLowerCase().includes('sikkim') || 
+                        event.title?.toLowerCase().includes('sikkim') ||
+                        event.description?.toLowerCase().includes('sikkim');
+  
+  if (!isSikkimEvent) return null;
+  
   return (
+    <Link 
+      href={`/book-event?eventId=${event.id}`}
+      className="inline-flex items-center px-3 py-1 mt-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
+    >
+      Book Now
+    </Link>
+  );
+};  return (
     <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl shadow-lg backdrop-blur-xl border border-gray-200 dark:border-gray-800">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
@@ -374,6 +392,8 @@ export default function CulturalCalendar() {
                               <span>{event.location}</span>
                             </div>
                           </div>
+                          {/* Add Booking button for each event */}
+                          <BookingButton event={event} />
                         </div>
                       </motion.li>
                     ))}
