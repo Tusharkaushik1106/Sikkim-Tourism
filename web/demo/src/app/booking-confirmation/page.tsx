@@ -112,7 +112,7 @@ export default function BookingConfirmation() {
                 <div className="flex items-start gap-3">
                   <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
                   <div>
-                    <p className="font-medium">{event.title}</p>
+                    <p className="font-medium text-gray-900">{event.title}</p>
                     <p className="text-sm text-gray-600">{new Date(event.date).toLocaleDateString()}</p>
                   </div>
                 </div>
@@ -139,19 +139,19 @@ export default function BookingConfirmation() {
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-600">Booking ID</p>
-                  <p className="font-medium">#{booking.id}</p>
+                  <p className="font-medium text-gray-500">#{booking.id}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Participant Name</p>
-                  <p className="font-medium">{booking.participantName}</p>
+                  <p className="font-medium text-gray-500">{booking.participantName}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Email</p>
-                  <p className="font-medium">{booking.email}</p>
+                  <p className="font-medium text-gray-500">{booking.email}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Phone</p>
-                  <p className="font-medium">{booking.phone}</p>
+                  <p className="font-medium text-gray-500">{booking.phone}</p>
                 </div>
               </div>
             </div>

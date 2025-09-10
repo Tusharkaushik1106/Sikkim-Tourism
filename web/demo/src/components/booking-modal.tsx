@@ -31,6 +31,7 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
 
   if (!isOpen || !event) return null;
 
@@ -58,6 +59,63 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
       ...prev,
       [name]: value
     }));
+    // Clear validation error when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateCardForm = () => {
+    const errors: {[key: string]: string} = {};
+    
+    // Card number validation
+    const cardNumber = paymentData.cardNumber.replace(/\s/g, '');
+    if (!cardNumber) {
+      errors.cardNumber = 'Card number is required';
+    } else if (cardNumber.length < 13 || cardNumber.length > 19) {
+      errors.cardNumber = 'Card number must be 13-19 digits';
+    } else if (!/^\d+$/.test(cardNumber)) {
+      errors.cardNumber = 'Card number must contain only digits';
+    }
+
+    // Cardholder name validation
+    if (!paymentData.cardholderName.trim()) {
+      errors.cardholderName = 'Cardholder name is required';
+    } else if (paymentData.cardholderName.trim().length < 2) {
+      errors.cardholderName = 'Name must be at least 2 characters';
+    }
+
+    // Expiry date validation
+    const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+    if (!paymentData.expiryDate) {
+      errors.expiryDate = 'Expiry date is required';
+    } else if (!expiryRegex.test(paymentData.expiryDate)) {
+      errors.expiryDate = 'Use MM/YY format';
+    }
+
+    // CVV validation
+    if (!paymentData.cvv) {
+      errors.cvv = 'CVV is required';
+    } else if (!/^\d{3,4}$/.test(paymentData.cvv)) {
+      errors.cvv = 'CVV must be 3 or 4 digits';
+    }
+
+    return errors;
+  };
+
+  const validateUpiForm = () => {
+    const errors: {[key: string]: string} = {};
+    
+    if (!upiData.upiId) {
+      errors.upiId = 'UPI ID is required';
+    } else if (!/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(upiData.upiId)) {
+      errors.upiId = 'Invalid UPI ID format (e.g., user@paytm)';
+    }
+
+    return errors;
   };
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
@@ -67,8 +125,16 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
       return;
     }
 
+    // Validate payment form
+    const errors = paymentMethod === 'credit_card' ? validateCardForm() : validateUpiForm();
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
     setLoading(true);
     setError('');
+    setValidationErrors({});
 
     try {
       // Create booking
@@ -162,21 +228,21 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
 
         <div className="p-6">
           {/* Event Info */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold text-lg mb-2">{event.title}</h3>
-            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-lg mb-2 text-gray-900">{event.title}</h3>
+            <div className="flex flex-wrap gap-4 text-sm text-gray-700">
               <div className="flex items-center gap-1">
-                <Calendar size={16} />
+                <Calendar size={16} className="text-gray-500" />
                 <span>{new Date(event.date).toLocaleDateString()}</span>
               </div>
               {event.time && (
                 <div className="flex items-center gap-1">
-                  <Clock size={16} />
+                  <Clock size={16} className="text-gray-500" />
                   <span>{event.time}</span>
                 </div>
               )}
               <div className="flex items-center gap-1">
-                <MapPin size={16} />
+                <MapPin size={16} className="text-gray-500" />
                 <span>{event.location}</span>
               </div>
             </div>
@@ -201,7 +267,7 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                       name="participantName"
                       value={formData.participantName}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400"
                       required
                     />
                   </div>
@@ -214,7 +280,7 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400"
                       required
                     />
                   </div>
@@ -227,7 +293,7 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400"
                       required
                     />
                   </div>
@@ -239,7 +305,7 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                       name="numberOfParticipants"
                       value={formData.numberOfParticipants}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
                       required
                     >
                       {[...Array(Math.min(10, event.availableSlots || 10))].map((_, i) => (
@@ -260,7 +326,7 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                     value={formData.specialRequirements}
                     onChange={handleInputChange}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400"
                     placeholder="Any dietary restrictions, accessibility needs, etc."
                   />
                 </div>
@@ -288,33 +354,33 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                 <div className="mb-6">
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Select Payment Method</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <label className="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 bg-white">
                       <input
                         type="radio"
                         name="paymentMethod"
                         value="credit_card"
                         checked={paymentMethod === 'credit_card'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="mr-3"
+                        className="mr-3 text-blue-600 focus:ring-blue-500"
                       />
                       <div>
-                        <div className="font-medium">Credit/Debit Card</div>
-                        <div className="text-sm text-gray-500">Visa, Mastercard, RuPay</div>
+                        <div className="font-medium text-gray-900">Credit/Debit Card</div>
+                        <div className="text-sm text-gray-600">Visa, Mastercard, RuPay</div>
                       </div>
                     </label>
                     
-                    <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <label className="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 bg-white">
                       <input
                         type="radio"
                         name="paymentMethod"
                         value="upi"
                         checked={paymentMethod === 'upi'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="mr-3"
+                        className="mr-3 text-blue-600 focus:ring-blue-500"
                       />
                       <div>
-                        <div className="font-medium">UPI</div>
-                        <div className="text-sm text-gray-500">PhonePe, Paytm, GPay</div>
+                        <div className="font-medium text-gray-900">UPI</div>
+                        <div className="text-sm text-gray-600">PhonePe, Paytm, GPay</div>
                       </div>
                     </label>
                   </div>
@@ -333,9 +399,14 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                         value={paymentData.cardNumber}
                         onChange={handlePaymentInputChange}
                         placeholder="1234 5678 9012 3456"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 ${
+                          validationErrors.cardNumber ? 'border-red-500' : 'border-gray-300'
+                        }`}
                         required
                       />
+                      {validationErrors.cardNumber && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.cardNumber}</p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -346,9 +417,14 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                         name="cardholderName"
                         value={paymentData.cardholderName}
                         onChange={handlePaymentInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 ${
+                          validationErrors.cardholderName ? 'border-red-500' : 'border-gray-300'
+                        }`}
                         required
                       />
+                      {validationErrors.cardholderName && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.cardholderName}</p>
+                      )}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -361,9 +437,14 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                           value={paymentData.expiryDate}
                           onChange={handlePaymentInputChange}
                           placeholder="MM/YY"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 ${
+                            validationErrors.expiryDate ? 'border-red-500' : 'border-gray-300'
+                          }`}
                           required
                         />
+                        {validationErrors.expiryDate && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.expiryDate}</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -375,9 +456,14 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                           value={paymentData.cvv}
                           onChange={handlePaymentInputChange}
                           placeholder="123"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 ${
+                            validationErrors.cvv ? 'border-red-500' : 'border-gray-300'
+                          }`}
                           required
                         />
+                        {validationErrors.cvv && (
+                          <p className="text-red-500 text-sm mt-1">{validationErrors.cvv}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -393,9 +479,14 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
                         value={upiData.upiId}
                         onChange={handleUpiInputChange}
                         placeholder="yourname@paytm / yourname@phonepe / yourname@gpay"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-400 ${
+                          validationErrors.upiId ? 'border-red-500' : 'border-gray-300'
+                        }`}
                         required
                       />
+                      {validationErrors.upiId && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.upiId}</p>
+                      )}
                     </div>
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <h4 className="font-medium text-blue-900 mb-2">How to pay with UPI:</h4>
@@ -410,8 +501,8 @@ export default function BookingModal({ event, isOpen, onClose, onBookingComplete
 
                 <div className="bg-green-50 p-4 rounded-lg">
                   <div className="flex justify-between items-center text-lg font-semibold">
-                    <span>Amount to Pay:</span>
-                    <span>₹{totalAmount}</span>
+                    <span className="text-gray-900">Amount to Pay:</span>
+                    <span className="text-gray-900">₹{totalAmount}</span>
                   </div>
                 </div>
 

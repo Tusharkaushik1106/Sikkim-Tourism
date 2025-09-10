@@ -2,35 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Monastery360 v17 тАФ Final</title>
+<title>Monastery360 - Interactive Map</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --font-sans: "Inter", "Segoe UI", system-ui, Arial;
+    --font-sans: "Poppins", "Inter", "Segoe UI", system-ui, Arial;
+    --font-heading: "Lato", "Poppins", system-ui, Arial;
     --radius: 12px;
-    /* Light Mode */
-    --bg-primary: #f3f6fb;
-    --bg-secondary: #ffffff;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
+    /* Light Mode - Matching website theme */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
     --border-color: #e2e8f0;
-    --accent-primary: #0077b6;
-    --accent-secondary: #e0f2fe;
+    --accent-primary: #ff6b35;
+    --accent-secondary: #fef3c7;
     --shadow-color: rgba(0,0,0,0.1);
+    --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #2e86ab 100%);
   }
 
   body.dark-mode {
-    /* Dark Mode */
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --text-primary: #c9d1d9;
-    --text-secondary: #8b949e;
-    --border-color: #30363d;
-    --accent-primary: #0096c7;
-    --accent-secondary: #0c2d48;
+    /* Dark Mode - Matching website theme */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    --accent-primary: #ff6b35;
+    --accent-secondary: #1e293b;
     --shadow-color: rgba(0,0,0,0.4);
   }
 
@@ -43,56 +48,167 @@
   }
   #map {
     position: fixed;
-    left: 0; right: 0; top: 56px; bottom: 0;
+    left: 0; right: 0; top: 70px; bottom: 0;
     z-index: 0;
     background-color: var(--bg-primary);
   }
   .header {
-    position: fixed; left: 0; right: 0; top: 0; height: 56px;
+    position: fixed; left: 0; right: 0; top: 0; height: 70px;
     background: var(--bg-secondary);
+    backdrop-filter: blur(10px);
     display: flex; align-items: center;
-    box-shadow: 0 2px 8px var(--shadow-color);
+    box-shadow: 0 4px 20px var(--shadow-color);
     border-bottom: 1px solid var(--border-color);
-    z-index: 1200; padding: 0 16px; gap: 12px;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    z-index: 1200; padding: 0 24px; gap: 16px;
+    transition: all 0.3s ease;
   }
-  .brand { font-weight: 700; font-size: 18px; color: var(--text-primary); }
+  .brand { 
+    font-family: var(--font-heading);
+    font-weight: 700; 
+    font-size: 20px; 
+    color: var(--text-primary);
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   #sidebar {
-    position: fixed; left: 12px; top: 68px; width: 350px; bottom: 12px;
+    position: fixed; left: 16px; top: 82px; width: 360px; bottom: 16px;
     background: var(--bg-secondary);
-    border-radius: var(--radius);
-    padding: 14px;
-    box-shadow: 0 6px 20px var(--shadow-color);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 40px var(--shadow-color);
     border: 1px solid var(--border-color);
     overflow: auto;
     z-index: 1200;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
   }
-  .sectionTitle { font-weight: 700; margin: 16px 0 8px 0; font-size: 14px; color: var(--text-primary); }
+  .sectionTitle { 
+    font-family: var(--font-heading);
+    font-weight: 700; 
+    margin: 0 0 16px 0; 
+    font-size: 18px; 
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-  .controls-container { margin-left: auto; display: flex; align-items: center; gap: 16px; }
-  .lang-switcher, .theme-switcher { display: flex; gap: 4px; background: var(--bg-primary); border-radius: 8px; padding: 4px; border: 1px solid var(--border-color); }
-  .lang-btn, .theme-btn { padding: 6px 10px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px; color: var(--text-secondary); }
-  .lang-btn.active, .theme-btn.active { background: var(--accent-primary); color: white; }
-  .monastery-card {
-    border-radius: var(--radius); padding: 12px; background: var(--bg-primary);
-    border: 1px solid var(--border-color); margin-bottom: 10px; cursor: pointer; transition: all .2s ease;
+  .controls-container { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+  .lang-switcher, .theme-switcher { 
+    display: flex; 
+    gap: 2px; 
+    background: var(--bg-primary); 
+    border-radius: 12px; 
+    padding: 4px; 
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px var(--shadow-color);
   }
-  .monastery-card:hover { border-color: var(--accent-primary); }
-  .monastery-name { font-weight: 700; }
-  .attractions-list { display: none; margin-top: 10px; padding-left: 15px; border-left: 2px solid var(--border-color); }
-  .attraction-item { font-size: 14px; color: var(--text-secondary); padding: 8px; border-radius: 8px; cursor: pointer; }
-  .attraction-item:hover { background-color: var(--accent-secondary); color: var(--accent-primary); }
+  .lang-btn, .theme-btn { 
+    padding: 8px 12px; 
+    border: none; 
+    background: transparent; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: 500; 
+    font-size: 13px; 
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    min-width: 60px;
+  }
+  .lang-btn:hover, .theme-btn:hover { 
+    background: var(--accent-secondary); 
+    color: var(--accent-primary);
+  }
+  .lang-btn.active, .theme-btn.active { 
+    background: var(--accent-primary); 
+    color: white; 
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+  }
+  .monastery-card {
+    border-radius: 16px; 
+    padding: 16px; 
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color); 
+    margin-bottom: 12px; 
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+  .monastery-card:hover { 
+    border-color: var(--accent-primary); 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--shadow-color);
+  }
+  .monastery-name { 
+    font-family: var(--font-heading);
+    font-weight: 700; 
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .attractions-list { 
+    display: none; 
+    margin-top: 12px; 
+    padding-left: 16px; 
+    border-left: 3px solid var(--accent-primary);
+    background: var(--accent-secondary);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .attraction-item { 
+    font-size: 14px; 
+    color: var(--text-secondary); 
+    padding: 10px 12px; 
+    border-radius: 8px; 
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: all 0.2s ease;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+  }
+  .attraction-item:hover { 
+    background-color: var(--accent-primary); 
+    color: white;
+    transform: translateX(4px);
+  }
   .infoBox {
-    position: fixed; right: 18px; bottom: 18px; z-index: 1300; width: 360px;
-    background: var(--bg-secondary); border: 1px solid var(--border-color);
-    padding: 14px; border-radius: var(--radius); box-shadow: 0 12px 30px var(--shadow-color);
-    font-size: 14px; display: none;
+    position: fixed; right: 20px; bottom: 20px; z-index: 1300; width: 380px;
+    background: var(--bg-secondary); 
+    border: 1px solid var(--border-color);
+    padding: 20px; 
+    border-radius: 16px; 
+    box-shadow: 0 20px 60px var(--shadow-color);
+    font-size: 14px; 
+    display: none;
+    backdrop-filter: blur(10px);
   }
   .infoBox.visible { display: block; }
-  .map-pin { width: 32px; height: 32px; border-radius: 50% 50% 50% 0; border: 2px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: rotate(-45deg); display: flex; justify-content: center; align-items: center; }
-  .map-pin-icon { font-size: 18px; transform: rotate(45deg); }
-  .loader { border: 4px solid var(--border-color); border-top: 4px solid var(--accent-primary); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 16px auto; }
+  .map-pin { 
+    width: 36px; 
+    height: 36px; 
+    border-radius: 50% 50% 50% 0; 
+    border: 3px solid #fff; 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3); 
+    transform: rotate(-45deg); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  .map-pin:hover {
+    transform: rotate(-45deg) scale(1.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  }
+  .map-pin-icon { font-size: 20px; transform: rotate(45deg); }
+  .loader { 
+    border: 4px solid var(--border-color); 
+    border-top: 4px solid var(--accent-primary); 
+    border-radius: 50%; 
+    width: 32px; 
+    height: 32px; 
+    animation: spin 1s linear infinite; 
+    margin: 20px auto; 
+  }
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   /* Ensure markers receive clicks */
   .leaflet-marker-icon, .custom-div-icon, .map-pin { pointer-events: auto; cursor: pointer; }
@@ -105,8 +221,8 @@
     <div class="controls-container">
       <div class="lang-switcher">
         <button id="lang-en" class="lang-btn" onclick="setLanguage('en')">English</button>
-        <button id="lang-ne" class="lang-btn" onclick="setLanguage('ne')">рдиреЗрдкрд╛рд▓реА</button>
-        <button id="lang-bo" class="lang-btn" onclick="setLanguage('bo')">р╜Цр╜╝р╜Ср╝Лр╜жр╛Рр╜С</button>
+        <button id="lang-hi" class="lang-btn" onclick="setLanguage('hi')">हिन्दी</button>
+        <button id="lang-ne" class="lang-btn" onclick="setLanguage('ne')">नेपाली</button>
       </div>
       <div class="theme-switcher">
         <button id="theme-light" class="theme-btn" onclick="setTheme('light')">тШАя╕П</button>
@@ -135,27 +251,59 @@
    1. DATA & TRANSLATIONS
    ------------------------------ */
 const translations = {
-    en: { title: "Monastery360", monasteries_title: "Monasteries", estimates_title: "Travel Estimates", close_btn: "Close", route_from: "Route from", fare_details: "Taxi Route Details", road_dist: "Road Distance", est_time: "Est. Time", est_fare: "Est. Fare", route_error: "<b>Route Not Found.</b><br>A road path could not be found for this area." },
-    ne: { title: "рдореЛрдирд╛рд╕реНрдЯреНрд░реАрейремреж", monasteries_title: "рдЧреБрдореНрдмрд╛рд╣рд░реВ", estimates_title: "рдпрд╛рддреНрд░рд╛ рдЕрдиреБрдорд╛рди", close_btn: "рдмрдиреНрдж рдЧрд░реНрдиреБрд╣реЛрд╕реН", route_from: "рдмрд╛рдЯ рдорд╛рд░реНрдЧ", fare_details: "рдЯреНрдпрд╛рдХреНрд╕реА рдорд╛рд░реНрдЧ рд╡рд┐рд╡рд░рдг", road_dist: "рд╕рдбрдХ рджреВрд░реА", est_time: "рдЕрдиреБрдорд╛рдирд┐рдд рд╕рдордп", est_fare: "рдЕрдиреБрдорд╛рдирд┐рдд рднрд╛рдбрд╛", route_error: "<b>рдорд╛рд░реНрдЧ рдлреЗрд▓рд╛ рдкрд░реЗрдиред</b><br>рдпрд╕ рдХреНрд╖реЗрддреНрд░рдорд╛ рдирдХреНрд╕рд╛ рдбрд╛рдЯрд╛ рдЕрдкреВрд░реНрдг рднрдПрдХреЛ рдХрд╛рд░рдгрд▓реЗ рд╕рдбрдХ рдорд╛рд░реНрдЧ рдлреЗрд▓рд╛ рдкрд╛рд░реНрди рд╕рдХрд┐рдПрдиред" },
-    bo: { title: "р╜Ср╜Вр╜╝р╜Ур╝Лр╜Фр╝Лр╝гр╝жр╝а", monasteries_title: "р╜Ср╜Вр╜╝р╜Ур╝Лр╜Фр╝Лр╜Ър╜╝р╝Н", estimates_title: "р╜ар╜Вр╛▓р╜┤р╜гр╝Лр╜Цр╜Юр╜┤р╜Ср╝Лр╜Ър╜╝р╜Ср╝Лр╜Ср╜Фр╜В", close_btn: "р╜Бр╝Лр╜вр╛Тр╛▒р╜В", route_from: "р╜Ур╜жр╝Н", fare_details: "р╜Шр╜╝р╝Лр╜Кр╜ар╜▓р╝Лр╜гр╜Шр╝Лр╜Вр╛▒р╜▓р╝Л рк╡рк┐ркЧркдр╝Н", road_dist: "р╜гр╜Шр╝Лр╜Рр╜В", est_time: "р╜Ър╜╝р╜Ср╝Лр╜Ср╜Фр╜Вр╝Лр╜Ср╜┤р╜жр╝Лр╜Ър╜╝р╜Ср╝Н", est_fare: "р╜Ър╜╝р╜Ср╝Лр╜Ср╜Фр╜Вр╝Лр╜Вр╛│р╝Лр╜Жр╝Н", route_error: "<b>р╜гр╜Шр╝Лр╜Шр╝Лр╜вр╛Щр╜║р╜Ср╝Н</b><br>р╜жр╝Лр╜Бр╛▓р╜ар╜▓р╝Лр╜Вр╜Ур╜жр╝Лр╜Ър╜Ср╝Лр╜Шр╝Лр╜Ър╜Др╝Лр╜Цр╜ар╜▓р╝Лр╜Ср╜Цр╜Др╝Лр╜Вр╜▓р╜жр╝Лр╜гр╜Шр╝Лр╜Юр╜▓р╜Вр╝Лр╜вр╛Щр╜║р╜Ср╝Лр╜Шр╝Лр╜жр╜╝р╜Др╝Лр╝Н" }
+    en: { 
+        title: "Monastery360", 
+        monasteries_title: "Monasteries", 
+        estimates_title: "Travel Estimates", 
+        close_btn: "Close", 
+        route_from: "Route from", 
+        fare_details: "Taxi Route Details", 
+        road_dist: "Road Distance", 
+        est_time: "Est. Time", 
+        est_fare: "Est. Fare", 
+        route_error: "<b>Route Not Found.</b><br>A road path could not be found for this area." 
+    },
+    hi: { 
+        title: "मठ360", 
+        monasteries_title: "मठ", 
+        estimates_title: "यात्रा अनुमान", 
+        close_btn: "बंद करें", 
+        route_from: "रूट", 
+        fare_details: "टैक्सी रूट विवरण", 
+        road_dist: "सड़क दूरी", 
+        est_time: "अनुमानित समय", 
+        est_fare: "अनुमानित किराया", 
+        route_error: "<b>रूट नहीं मिला।</b><br>इस क्षेत्र के लिए सड़क मार्ग नहीं मिल सका।" 
+    },
+    ne: { 
+        title: "मठ360", 
+        monasteries_title: "मठहरू", 
+        estimates_title: "यात्रा अनुमान", 
+        close_btn: "बन्द गर्नुहोस्", 
+        route_from: "बाटो", 
+        fare_details: "ट्याक्सी बाटो विवरण", 
+        road_dist: "सडक दूरी", 
+        est_time: "अनुमानित समय", 
+        est_fare: "अनुमानित किराया", 
+        route_error: "<b>बाटो फेला परेन।</b><br>यस क्षेत्रका लागि सडक मार्ग फेला परेन।" 
+    }
 };
 const DATA = {
   monasteries: [
-    { id:'rumtek', name: {en:'Rumtek Monastery', ne:'рд░реБрдордЯреЗрдХ рдЧреБрдореНрдмрд╛', bo:'р╜вр╜┤р╜Шр╝Лр╜Рр╜║р╜Вр╝Лр╜Ср╜Вр╜╝р╜Ур╝Лр╜Фр╝Л'}, icon: 'ЁЯПп', coords:[27.3302, 88.6130], color:'#d90429', attractions: [
-        {id: 'rumtek_1', name: {en:'J.L. Nehru Botanical Garden', ne:'рдЬреЗ.рдПрд▓. рдиреЗрд╣рд░реВ рд╡рдирд╕реНрдкрддрд┐ рдЙрджреНрдпрд╛рди', bo:'р╜в botanical р╜жр╛Рр╛▒р╜║р╜Ср╝Лр╜Ър╜гр╝Н'}, icon: 'ЁЯМ│', coords: [27.3261, 88.6185]},
-        {id: 'rumtek_2', name: {en:'Namgyal Institute of Tibetology', ne:'рдирд╛рдордЧреНрдпрд╛рд▓ рддрд┐рдмреНрдмрддреЛрд▓реЛрдЬреА рд╕рдВрд╕реНрдерд╛рди', bo:'Namgyal р╜Цр╜╝р╜Ср╝Лр╜вр╜▓р╜Вр╝Лр╜Фр╜ар╜▓р╝Лр╜жр╛│р╜╝р╜Цр╝Лр╜Вр╜Йр╜║р╜вр╝Лр╜Бр╜Др╝Лр╝Н'}, icon: 'ЁЯУЪ', coords: [27.3248, 88.6069]},
-        {id: 'rumtek_3', name: {en:'Do Drul Chorten Stupa', ne:'рджреЛ рджреНрд░реБрд▓ рдЪреЛрд░реНрддреЗрди рд╕реНрддреБрдк', bo:'р╜Шр╜Ср╜╝р╝Лр╜Вр╛▓р╜┤р╜гр╝Лр╜Шр╜Жр╜╝р╜Ср╝Лр╜вр╛Яр╜║р╜Ур╝Н'}, icon: 'тШ╕я╕П', coords: [27.3174, 88.6121]}
+    { id:'rumtek', name: {en:'Rumtek Monastery', hi:'रुमटेक मठ', ne:'रुमटेक मठ'}, icon: '🏛️', coords:[27.290384029445423, 88.56139015184537], color:'#d90429', attractions: [
+        {id: 'rumtek_1', name: {en:'J.L. Nehru Botanical Garden', hi:'जे.एल. नेहरू वनस्पति उद्यान', ne:'जे.एल. नेहरू वनस्पति बगैंचा'}, icon: '🌿', coords: [27.3261, 88.6185]},
+        {id: 'rumtek_2', name: {en:'Namgyal Institute of Tibetology', hi:'नामग्याल तिब्बत अध्ययन संस्थान', ne:'नामग्याल तिब्बत अध्ययन संस्थान'}, icon: '📚', coords: [27.3248, 88.6069]},
+        {id: 'rumtek_3', name: {en:'Do Drul Chorten Stupa', hi:'दो द्रुल चोर्टेन स्तूप', ne:'दो द्रुल चोर्टेन स्तूप'}, icon: '🛕', coords: [27.3174, 88.6121]}
     ]},
-    { id:'ranka', name: {en:'Ranka (Lingdum) Monastery', ne:'рд░рд╛рдЩреНрдХрд╛ (рд▓рд┐рдЩреНрджрдо) рдЧреБрдореНрдмрд╛', bo:'р╜Вр╛│р╜▓р╜Др╝Лр╜Ср╜┤р╜Шр╝Лр╜Ср╜Вр╜╝р╜Ур╝Лр╜Фр╝Л'}, icon: 'ЁЯПп', coords:[27.3386, 88.6724], color:'#0077b6', attractions: [
-        {id: 'ranka_1', name: {en:'Banjhakri Falls & Energy Park', ne:'рдмрдирдЭрд╛рдХреНрд░реА рдЭрд░рдирд╛ рд░ рдКрд░реНрдЬрд╛ рдкрд╛рд░реНрдХ', bo:'р╜Цр╜Ур╝Лр╜Зр╜Вр╝Лр╜вр╜▓р╝Лр╜вр╛жр╜Цр╝Лр╜Жр╜┤р╝Н'}, icon: 'ЁЯПЮя╕П', coords: [27.3202, 88.6411]},
-        // REPLACED Lingdum View Point with Tashi View Point for better routing data
-        {id: 'ranka_2', name: {en:'Tashi View Point', ne:'рддрд╛рд╢реА рднреНрдпреВ рдкреЛрдЗрдиреНрдЯ', bo:'р╜Цр╜Ар╛▓р╝Лр╜др╜▓р╜жр╝Лр╜гр╛Яр╝Л╨│╨╗╤П╨┤╨║╨╕р╝Н'}, icon: 'тЫ░я╕П', coords: [27.3595, 88.6215]},
-        {id: 'ranka_3', name: {en:'Ganesh Tok', ne:'рдЧрдгреЗрд╢ рдЯреЛрдХ', bo:'р╜ВркгрлЗр╜др╝Лр╜Пр╜╝р╜В'}, icon: 'ЁЯХЙя╕П', coords: [27.3503, 88.6256]}
+    { id:'ranka', name: {en:'Ranka (Lingdum) Monastery', hi:'रांका (लिंगडम) मठ', ne:'रांका (लिंगडम) मठ'}, icon: '🏛️', coords:[27.3386, 88.6724], color:'#0077b6', attractions: [
+        {id: 'ranka_1', name: {en:'Banjhakri Falls & Energy Park', hi:'बंझाकरी झरना और ऊर्जा पार्क', ne:'बंझाकरी झरना र ऊर्जा पार्क'}, icon: '🌊', coords: [27.3202, 88.6411]},
+        {id: 'ranka_2', name: {en:'Tashi View Point', hi:'ताशी व्यू पॉइंट', ne:'ताशी व्यू पॉइंट'}, icon: '🏔️', coords: [27.3595, 88.6215]},
+        {id: 'ranka_3', name: {en:'Ganesh Tok', hi:'गणेश टोक', ne:'गणेश टोक'}, icon: '🕉️', coords: [27.3503, 88.6256]}
     ]},
-    { id:'pemayangtse', name: {en:'Pemayangtse Monastery', ne:'рдкреЗрдорд╛рдпрдЩреНрддреНрд╕реЗ рдЧреБрдореНрдмрд╛', bo:'р╜Фр╜Ср╛ир╝Лр╜бр╜Др╝Лр╜вр╛йр╜║р╝Лр╜Ср╜Вр╜╝р╜Ур╝Лр╜Фр╝Л'}, icon: 'ЁЯПп', coords:[27.3054, 88.2393], color:'#028090', attractions: [
-        {id: 'pema_1', name: {en:'Rabdentse Ruins', ne:'рд░рд╛рдмреНрджреЗрдиреНрддреНрд╕реЗ рднрдЧреНрдирд╛рд╡рд╢реЗрд╖', bo:'р╜вр╜Цр╝Лр╜Цр╜вр╛Яр╜Ур╝Лр╜вр╛йр╜║р╝Л р░╢р░┐р░зр░┐р░▓р╕Лр╕▓р╕Бр╝Н'}, icon: 'ЁЯПЫя╕П', coords: [27.2989, 88.2351]},
-        {id: 'pema_2', name: {en:'Pelling Skywalk', ne:'рдкреЗрд▓рд┐рдЩ рд╕реНрдХрд╛рдИрд╡рд╛рдХ', bo:'Skywalk  рдЖрдХрд╛рд╢р░ор░╛р░░р▒Нр░Чр╝Н'}, icon: 'ЁЯМЙ', coords: [27.2885, 88.2391]},
-        {id: 'pema_3', name: {en:'Khecheopalri Lake', ne:'рдЦреЗрдЪреЗрдУрдкрд▓реНрд░реА рддрд╛рд▓', bo:'р╜Шр╜Бр╜ар╝Лр╜жр╛др╛▒р╜╝р╜Ср╝Лр╜Ср╜Фр╜гр╝Лр╜вр╜▓р╝Лр╜Шр╜Ър╜╝р╝Н'}, icon: 'ЁЯТз', coords: [27.3604, 88.2249]}
+    { id:'pemayangtse', name: {en:'Pemayangtse Monastery', hi:'पेमायंग्त्से मठ', ne:'पेमायंग्त्से मठ'}, icon: '🏛️', coords:[27.3054, 88.2393], color:'#028090', attractions: [
+        {id: 'pema_1', name: {en:'Rabdentse Ruins', hi:'रबदेंत्से खंडहर', ne:'रबदेंत्से खंडहर'}, icon: '🏛️', coords: [27.2989, 88.2351]},
+        {id: 'pema_2', name: {en:'Pelling Skywalk', hi:'पेलिंग स्काईवॉक', ne:'पेलिंग स्काईवॉक'}, icon: '🌉', coords: [27.2885, 88.2391]},
+        {id: 'pema_3', name: {en:'Khecheopalri Lake', hi:'खेचोपालरी झील', ne:'खेचोपालरी ताल'}, icon: '🏞️', coords: [27.3604, 88.2249]}
     ]}
   ]
 };
@@ -262,6 +410,7 @@ async function openFarePopup(monasteryObj, attractionObj) {
    ------------------------------ */
 function setLanguage(lang) {
     currentLanguage = lang;
+    localStorage.setItem('language', lang);
     document.querySelectorAll('[data-translate-key]').forEach(el => {
         const key = el.dataset.translateKey;
         if (translations[lang][key]) el.innerText = translations[lang][key];
@@ -350,8 +499,9 @@ document.getElementById('closeInfo').addEventListener('click', () => {
 // Initial Load
 document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedLanguage = localStorage.getItem('language') || 'en';
     setTheme(savedTheme);
-    setLanguage('en');
+    setLanguage(savedLanguage);
 });
 </script>
 </body>

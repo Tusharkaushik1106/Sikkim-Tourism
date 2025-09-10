@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateEventsForYear, CulturalEvent } from '@/lib/events';
+import { additionalSeptemberEvents } from '@/lib/september-events';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0; // Ensure no caching
@@ -16,6 +17,16 @@ export async function GET(request: Request) {
 
     // Generate events for the requested year dynamically
     let events: CulturalEvent[] = generateEventsForYear(year);
+
+    // Add additional September events for current year
+    if (year === new Date().getFullYear()) {
+      const septemberEventsWithYear = additionalSeptemberEvents.map(event => ({
+        ...event,
+        date: event.date.replace('2024', year.toString()),
+        id: `${year}-${event.id}`
+      }));
+      events.push(...septemberEventsWithYear);
+    }
 
     // Add booking-related properties to events
     events = events.map(event => {
