@@ -1,0 +1,6 @@
+openai
+flask
+flask-cors
+pandas
+numpy
+faiss-cpu
