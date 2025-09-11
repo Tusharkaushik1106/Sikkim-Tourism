@@ -7,13 +7,24 @@ import { useRouter } from 'next/navigation';
 export default function ChatbotPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [showInitialMessage, setShowInitialMessage] = useState(false);
+  const [hidePopup, setHidePopup] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     // Show initial message after 3 seconds
-    const timer = setTimeout(() => setShowInitialMessage(true), 3000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!hidePopup) {
+      const timer = setTimeout(() => setShowInitialMessage(true), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [hidePopup]);
+
+  // Show popup again after 3 minutes if closed
+  useEffect(() => {
+    if (hidePopup) {
+      const timer = setTimeout(() => setHidePopup(false), 180000); // 3 minutes
+      return () => clearTimeout(timer);
+    }
+  }, [hidePopup]);
 
   const handleSearch = () => {
     window.location.href = '/search?source=chatbot';
@@ -22,16 +33,27 @@ export default function ChatbotPopup() {
   return (
     <>
       <AnimatePresence>
-        {showInitialMessage && !isOpen && (
+        {showInitialMessage && !isOpen && !hidePopup && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 right-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-xs"
+            className="fixed bottom-24 right-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-xs z-[100]"
           >
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Need help finding a monastery?
-            </p>
+            <div className="flex justify-between items-start">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Need help finding a monastery?
+              </p>
+              <button
+                onClick={() => { setShowInitialMessage(false); setHidePopup(true); }}
+                className="ml-2 text-gray-400 hover:text-gray-600"
+                aria-label="Close"
+              >
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                  <path d="M6 6L14 14M6 14L14 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
             <button
               onClick={() => setIsOpen(true)}
               className="mt-2 text-sm text-orange-500 hover:text-orange-600"
@@ -44,7 +66,8 @@ export default function ChatbotPopup() {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 right-8 p-4 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full shadow-lg hover:shadow-orange-500/20 transition-all duration-300"
+        className="fixed bottom-8 right-8 p-4 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full shadow-lg hover:shadow-orange-500/20 transition-all duration-300 z-[101]"
+        style={{ pointerEvents: "auto" }}
       >
         <svg
           className="w-6 h-6 text-white"
@@ -76,11 +99,23 @@ export default function ChatbotPopup() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-28 right-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-sm w-full"
+            className="fixed bottom-28 right-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-sm w-full z-[102]"
+            style={{ pointerEvents: "auto" }}
           >
-            <h3 className="text-lg font-semibold mb-4 dark:text-white">
-              Welcome to Monastery Search!
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold dark:text-white">
+                Welcome to Monastery Search!
+              </h3>
+              <button
+                onClick={() => { setIsOpen(false); setHidePopup(true); setShowInitialMessage(false); }}
+                className="ml-2 text-gray-400 hover:text-gray-600"
+                aria-label="Close"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M6 6L14 14M6 14L14 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               I can help you find information about monasteries in Sikkim. Click below to start searching!
             </p>

@@ -175,7 +175,7 @@ export default function Header() {
                 ) : (
                   <button
                     onClick={() => signIn('google')}
-                    className="px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
+                    className="px-2 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
                   >
                     Sign In
                   </button>
@@ -364,10 +364,13 @@ export default function Header() {
 // Enhanced theme toggle button with animations
 function ThemeToggleButton() {
   return (
-    <div className="relative">
+    <div className="relative inline-block">
+      {/* Functional theme toggle */}
       <ThemeToggle />
+
+      {/* Decorative ping effect (doesn't block clicks now) */}
       <motion.span
-        className="absolute -bottom-1 -right-1 flex h-3 w-3"
+        className="pointer-events-none absolute -bottom-1 -right-1 flex h-3 w-3"
         initial={{ scale: 0 }}
         animate={{ scale: [0, 1, 1.2, 1] }}
         transition={{ duration: 1, delay: 1, repeat: Infinity, repeatDelay: 5 }}
