@@ -1,0 +1,98 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+
+export default function ChatbotPopup() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showInitialMessage, setShowInitialMessage] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Show initial message after 3 seconds
+    const timer = setTimeout(() => setShowInitialMessage(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSearch = () => {
+    window.location.href = '/search?source=chatbot';
+  };
+
+  return (
+    <>
+      <AnimatePresence>
+        {showInitialMessage && !isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-24 right-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-xs"
+          >
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Need help finding a monastery?
+            </p>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="mt-2 text-sm text-orange-500 hover:text-orange-600"
+            >
+              Ask me anything!
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-8 right-8 p-4 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full shadow-lg hover:shadow-orange-500/20 transition-all duration-300"
+      >
+        <svg
+          className="w-6 h-6 text-white"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          {isOpen ? (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          ) : (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+            />
+          )}
+        </svg>
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-28 right-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-sm w-full"
+          >
+            <h3 className="text-lg font-semibold mb-4 dark:text-white">
+              Welcome to Monastery Search!
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              I can help you find information about monasteries in Sikkim. Click below to start searching!
+            </p>
+            <button
+              onClick={handleSearch}
+              className="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-orange-500/20 transition-all duration-300"
+            >
+              Start Searching
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
