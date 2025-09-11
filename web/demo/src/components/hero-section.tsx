@@ -8,9 +8,9 @@ import FeatureCard from './feature-card'
 
 // Updated monastery background images with high-quality sources
 const bgImages = [
-  'https://images.unsplash.com/photo-1514897575457-c4db467cf78e?q=80&w=1920&h=1080&fit=crop&ixlib=rb-4.0.3',
-  'https://images.unsplash.com/photo-1610361418971-8752f7d57e5a?q=80&w=1920&h=1080&fit=crop&ixlib=rb-4.0.3',
-  'https://images.unsplash.com/photo-1623867084079-7018a2f6ce56?q=80&w=1920&h=1080&fit=crop&ixlib=rb-4.0.3',
+  'https://images.unsplash.com/photo-1573398643956-2b9e6ade3456?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1686851205339-96576bb72d6f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1692759873514-6514e8b7696d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 ]
 
 export default function HeroSection() {
@@ -74,13 +74,6 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.8 }}
           className="absolute top-40 left-0"
         >
-          <Image 
-            src="https://www.transparentpng.com/thumb/flag/buddhism-prayer-flags-png-clipart-LePHFc.png" 
-            width={350} 
-            height={70} 
-            alt="Prayer flags" 
-            className="opacity-40 dark:opacity-25"
-          />
         </motion.div>
         
         {/* Floating particles */}
@@ -230,18 +223,21 @@ export default function HeroSection() {
                     title="360° Virtual Tours"
                     description="Immersive monastery exploration"
                     icon="🏛️"
+                    href="/virtual-tours"
                     delay={0.8}
                   />
                   <FeatureCard 
                     title="Digital Archives"
                     description="Ancient manuscripts & murals"
                     icon="📜"
+                    href="/archives"
                     delay={1}
                   />
                   <FeatureCard 
                     title="Interactive Maps"
                     description="Geo-located monastery finder"
                     icon="🗺️"
+                    href="/map"
                     delay={1.2}
                   />
                 </div>

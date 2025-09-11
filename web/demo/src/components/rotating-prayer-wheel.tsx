@@ -55,7 +55,6 @@ export default function RotatingPrayerWheel({
       className={`relative flex items-center justify-center ${className}`} 
       style={{ width: wheelSize, height: wheelSize }}
     >
-      {/* Prayer wheel */}
       <motion.div
         animate={controls}
         className="cursor-pointer select-none"
@@ -64,12 +63,13 @@ export default function RotatingPrayerWheel({
         whileTap={{ scale: 0.95 }}
       >
         <Image
-          src="/images/prayer-wheel.svg"
+          src="/public/images/Prayerwheel.png"
           alt="Buddhist prayer wheel"
           width={wheelSize}
           height={wheelSize}
           priority
         />
+
       </motion.div>
       
       {/* Om mani padme hum mantra text that appears when spinning */}

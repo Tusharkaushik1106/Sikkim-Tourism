@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Monastery360 - Interactive Map</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --font-sans: "Poppins", "Inter", "Segoe UI", system-ui, Arial;
+    --font-heading: "Lato", "Poppins", system-ui, Arial;
+    --radius: 12px;
+    /* Light Mode - Matching website theme */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --accent-primary: #ff6b35;
+    --accent-secondary: #fef3c7;
+    --shadow-color: rgba(0,0,0,0.1);
+    --primary-gradient: linear-gradient(135deg, #ff6b35 0%, #2e86ab 100%);
+  }
+
+  body.dark-mode {
+    /* Dark Mode - Matching website theme */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    --accent-primary: #ff6b35;
+    --accent-secondary: #1e293b;
+    --shadow-color: rgba(0,0,0,0.4);
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  #map {
+    position: fixed;
+    left: 0; right: 0; top: 70px; bottom: 0;
+    z-index: 0;
+    background-color: var(--bg-primary);
+  }
+  .header {
+    position: fixed; left: 0; right: 0; top: 0; height: 70px;
+    background: var(--bg-secondary);
+    backdrop-filter: blur(10px);
+    display: flex; align-items: center;
+    box-shadow: 0 4px 20px var(--shadow-color);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 1200; padding: 0 24px; gap: 16px;
+    transition: all 0.3s ease;
+  }
+  .brand { 
+    font-family: var(--font-heading);
+    font-weight: 700; 
+    font-size: 20px; 
+    color: var(--text-primary);
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  #sidebar {
+    position: fixed; left: 16px; top: 82px; width: 360px; bottom: 16px;
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 40px var(--shadow-color);
+    border: 1px solid var(--border-color);
+    overflow: auto;
+    z-index: 1200;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  .sectionTitle { 
+    font-family: var(--font-heading);
+    font-weight: 700; 
+    margin: 0 0 16px 0; 
+    font-size: 18px; 
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .controls-container { margin-left: auto; display: flex; align-items: center; gap: 20px; }
+  .lang-switcher, .theme-switcher { 
+    display: flex; 
+    gap: 2px; 
+    background: var(--bg-primary); 
+    border-radius: 12px; 
+    padding: 4px; 
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+  .lang-btn, .theme-btn { 
+    padding: 8px 12px; 
+    border: none; 
+    background: transparent; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: 500; 
+    font-size: 13px; 
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    min-width: 60px;
+  }
+  .lang-btn:hover, .theme-btn:hover { 
+    background: var(--accent-secondary); 
+    color: var(--accent-primary);
+  }
+  .lang-btn.active, .theme-btn.active { 
+    background: var(--accent-primary); 
+    color: white; 
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+  }
+  .monastery-card {
+    border-radius: 16px; 
+    padding: 16px; 
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color); 
+    margin-bottom: 12px; 
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+  .monastery-card:hover { 
+    border-color: var(--accent-primary); 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--shadow-color);
+  }
+  .monastery-name { 
+    font-family: var(--font-heading);
+    font-weight: 700; 
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .attractions-list { 
+    display: none; 
+    margin-top: 12px; 
+    padding-left: 16px; 
+    border-left: 3px solid var(--accent-primary);
+    background: var(--accent-secondary);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .attraction-item { 
+    font-size: 14px; 
+    color: var(--text-secondary); 
+    padding: 10px 12px; 
+    border-radius: 8px; 
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: all 0.2s ease;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+  }
+  .attraction-item:hover { 
+    background-color: var(--accent-primary); 
+    color: white;
+    transform: translateX(4px);
+  }
+  .infoBox {
+    position: fixed; right: 20px; bottom: 20px; z-index: 1300; width: 380px;
+    background: var(--bg-secondary); 
+    border: 1px solid var(--border-color);
+    padding: 20px; 
+    border-radius: 16px; 
+    box-shadow: 0 20px 60px var(--shadow-color);
+    font-size: 14px; 
+    display: none;
+    backdrop-filter: blur(10px);
+  }
+  .infoBox.visible { display: block; }
+  .map-pin { 
+    width: 36px; 
+    height: 36px; 
+    border-radius: 50% 50% 50% 0; 
+    border: 3px solid #fff; 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3); 
+    transform: rotate(-45deg); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  .map-pin:hover {
+    transform: rotate(-45deg) scale(1.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  }
+  .map-pin-icon { font-size: 20px; transform: rotate(45deg); }
+  .loader { 
+    border: 4px solid var(--border-color); 
+    border-top: 4px solid var(--accent-primary); 
+    border-radius: 50%; 
+    width: 32px; 
+    height: 32px; 
+    animation: spin 1s linear infinite; 
+    margin: 20px auto; 
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  /* Ensure markers receive clicks */
+  .leaflet-marker-icon, .custom-div-icon, .map-pin { pointer-events: auto; cursor: pointer; }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="brand" data-translate-key="title">Monastery360</div>
+    <div class="controls-container">
+      <div class="lang-switcher">
+        <button id="lang-en" class="lang-btn" onclick="setLanguage('en')">English</button>
+        <button id="lang-hi" class="lang-btn" onclick="setLanguage('hi')">हिन्दी</button>
+        <button id="lang-ne" class="lang-btn" onclick="setLanguage('ne')">नेपाली</button>
+      </div>
+      <div class="theme-switcher">
+        <button id="theme-light" class="theme-btn" onclick="setTheme('light')">тШАя╕П</button>
+        <button id="theme-dark" class="theme-btn" onclick="setTheme('dark')">ЁЯМЩ</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div class="sectionTitle" data-translate-key="monasteries_title">Monasteries</div>
+    <div id="monasteryList"></div>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="infoBox" id="infoBox">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div id="infoTitle" style="font-weight:700" data-translate-key="estimates_title">Travel Estimates</div>
+        <button id="closeInfo" data-translate-key="close_btn">Close</button>
+    </div>
+    <div id="infoContent"></div>
+  </div>
+
+<script>
+/* ------------------------------
+   1. DATA & TRANSLATIONS
+   ------------------------------ */
+const translations = {
+    en: { 
+        title: "Monastery360", 
+        monasteries_title: "Monasteries", 
+        estimates_title: "Travel Estimates", 
+        close_btn: "Close", 
+        route_from: "Route from", 
+        fare_details: "Taxi Route Details", 
+        road_dist: "Road Distance", 
+        est_time: "Est. Time", 
+        est_fare: "Est. Fare", 
+        route_error: "<b>Route Not Found.</b><br>A road path could not be found for this area." 
+    },
+    hi: { 
+        title: "मठ360", 
+        monasteries_title: "मठ", 
+        estimates_title: "यात्रा अनुमान", 
+        close_btn: "बंद करें", 
+        route_from: "रूट", 
+        fare_details: "टैक्सी रूट विवरण", 
+        road_dist: "सड़क दूरी", 
+        est_time: "अनुमानित समय", 
+        est_fare: "अनुमानित किराया", 
+        route_error: "<b>रूट नहीं मिला।</b><br>इस क्षेत्र के लिए सड़क मार्ग नहीं मिल सका।" 
+    },
+    ne: { 
+        title: "मठ360", 
+        monasteries_title: "मठहरू", 
+        estimates_title: "यात्रा अनुमान", 
+        close_btn: "बन्द गर्नुहोस्", 
+        route_from: "बाटो", 
+        fare_details: "ट्याक्सी बाटो विवरण", 
+        road_dist: "सडक दूरी", 
+        est_time: "अनुमानित समय", 
+        est_fare: "अनुमानित किराया", 
+        route_error: "<b>बाटो फेला परेन।</b><br>यस क्षेत्रका लागि सडक मार्ग फेला परेन।" 
+    }
+};
+const DATA = {
+  monasteries: [
+    { id:'rumtek', name: {en:'Rumtek Monastery', hi:'रुमटेक मठ', ne:'रुमटेक मठ'}, icon: '🏛️', coords:[27.290384029445423, 88.56139015184537], color:'#d90429', attractions: [
+        {id: 'rumtek_1', name: {en:'J.L. Nehru Botanical Garden', hi:'जे.एल. नेहरू वनस्पति उद्यान', ne:'जे.एल. नेहरू वनस्पति बगैंचा'}, icon: '🌿', coords: [27.3261, 88.6185]},
+        {id: 'rumtek_2', name: {en:'Namgyal Institute of Tibetology', hi:'नामग्याल तिब्बत अध्ययन संस्थान', ne:'नामग्याल तिब्बत अध्ययन संस्थान'}, icon: '📚', coords: [27.3248, 88.6069]},
+        {id: 'rumtek_3', name: {en:'Do Drul Chorten Stupa', hi:'दो द्रुल चोर्टेन स्तूप', ne:'दो द्रुल चोर्टेन स्तूप'}, icon: '🛕', coords: [27.3174, 88.6121]}
+    ]},
+    { id:'ranka', name: {en:'Ranka (Lingdum) Monastery', hi:'रांका (लिंगडम) मठ', ne:'रांका (लिंगडम) मठ'}, icon: '🏛️', coords:[27.3386, 88.6724], color:'#0077b6', attractions: [
+        {id: 'ranka_1', name: {en:'Banjhakri Falls & Energy Park', hi:'बंझाकरी झरना और ऊर्जा पार्क', ne:'बंझाकरी झरना र ऊर्जा पार्क'}, icon: '🌊', coords: [27.3202, 88.6411]},
+        {id: 'ranka_2', name: {en:'Tashi View Point', hi:'ताशी व्यू पॉइंट', ne:'ताशी व्यू पॉइंट'}, icon: '🏔️', coords: [27.3595, 88.6215]},
+        {id: 'ranka_3', name: {en:'Ganesh Tok', hi:'गणेश टोक', ne:'गणेश टोक'}, icon: '🕉️', coords: [27.3503, 88.6256]}
+    ]},
+    { id:'pemayangtse', name: {en:'Pemayangtse Monastery', hi:'पेमायंग्त्से मठ', ne:'पेमायंग्त्से मठ'}, icon: '🏛️', coords:[27.3054, 88.2393], color:'#028090', attractions: [
+        {id: 'pema_1', name: {en:'Rabdentse Ruins', hi:'रबदेंत्से खंडहर', ne:'रबदेंत्से खंडहर'}, icon: '🏛️', coords: [27.2989, 88.2351]},
+        {id: 'pema_2', name: {en:'Pelling Skywalk', hi:'पेलिंग स्काईवॉक', ne:'पेलिंग स्काईवॉक'}, icon: '🌉', coords: [27.2885, 88.2391]},
+        {id: 'pema_3', name: {en:'Khecheopalri Lake', hi:'खेचोपालरी झील', ne:'खेचोपालरी ताल'}, icon: '🏞️', coords: [27.3604, 88.2249]}
+    ]}
+  ]
+};
+const modeProfiles = { taxi: { profile: 'driving', baseCost: 40, perKm: 18, color: '#ff6d00' } };
+
+/* ------------------------------
+   2. MAP SETUP & GLOBAL STATE
+   ------------------------------ */
+let currentLanguage = 'en';
+let currentRouteLayer = null;
+let openMonasteries = new Set();
+// Registry to map attraction IDs to their markers and parents
+const attractionRegistry = {};
+const sikkimBounds = L.latLngBounds(L.latLng(27.0, 88.0), L.latLng(28.2, 89.0));
+const map = L.map('map', { maxBounds: sikkimBounds, maxBoundsViscosity: 1.0, minZoom: 8 });
+// Ensure no generic map click handlers are active
+map.off('click');
+map.fitBounds(sikkimBounds);
+const monasteryLayer = L.layerGroup().addTo(map);
+const attractionLayer = L.layerGroup().addTo(map);
+
+/* ------------------------------
+   3. CORE LOGIC
+   ------------------------------ */
+async function getRouteData(startCoords, endCoords, profile) {
+    const url = `https://router.project-osrm.org/route/v1/${profile}/${startCoords[1]},${startCoords[0]};${endCoords[1]},${endCoords[0]}?overview=full&geometries=geojson`;
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        const data = await response.json();
+        if (data.code === 'Ok' && data.routes.length > 0) return data.routes[0];
+    } catch (error) { console.error("Route fetching failed:", error); }
+    return null;
+}
+function drawRoute(geoJsonGeometry, color) {
+    if (currentRouteLayer) map.removeLayer(currentRouteLayer);
+    currentRouteLayer = L.geoJSON(geoJsonGeometry, { style: { color, weight: 5, opacity: 0.75 } }).addTo(map);
+    map.fitBounds(currentRouteLayer.getBounds().pad(0.2));
+}
+async function calculateAndShowRoute(startCoords, endCoords, title) {
+    const box = document.getElementById('infoBox'), infoContent = document.getElementById('infoContent');
+    document.getElementById('infoTitle').innerText = title;
+    infoContent.innerHTML = '<div class="loader"></div>';
+    box.classList.add('visible');
+    const route = await getRouteData(startCoords, endCoords, modeProfiles.taxi.profile);
+    const lang = translations[currentLanguage];
+    if (route) {
+        const distanceKm = (route.distance / 1000), timeMin = Math.round(route.duration / 60), cost = Math.round(modeProfiles.taxi.baseCost + modeProfiles.taxi.perKm * distanceKm);
+        infoContent.innerHTML = `<div style="padding: 8px;"><p><strong>ЁЯЪХ ${lang.fare_details}</strong></p><p>${lang.road_dist}: <strong>${distanceKm.toFixed(2)} km</strong></p><p>${lang.est_time}: <strong>~${timeMin} minutes</strong></p><p>${lang.est_fare}: <strong>тВ╣${cost}</strong></p></div>`;
+        drawRoute(route.geometry, modeProfiles.taxi.color);
+    } else { infoContent.innerHTML = lang.route_error; }
+}
+
+// Shared helper: open fare popup for a monastery->attraction and draw route
+async function openFarePopup(monasteryObj, attractionObj) {
+    // Try to use user's current location as pickup; fallback to monastery coords
+    const end = attractionObj.coords;
+    const userPickup = await (async () => {
+        if (!navigator.geolocation) return null;
+        try {
+            const pos = await new Promise((resolve, reject) => {
+                const id = navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+            });
+            return [pos.coords.latitude, pos.coords.longitude];
+        } catch (_) { return null; }
+    })();
+    const start = userPickup || monasteryObj.coords;
+    const popup = L.popup({ closeButton: true })
+      .setLatLng(end)
+      .setContent('<div style="min-width:220px;">Calculating fare...</div>')
+      .openOn(map);
+    const route = await getRouteData(start, end, modeProfiles.taxi.profile);
+    const lang = translations[currentLanguage];
+    if (route) {
+        const distanceKm = (route.distance / 1000);
+        const timeMin = Math.round(route.duration / 60);
+        const cost = Math.round(modeProfiles.taxi.baseCost + modeProfiles.taxi.perKm * distanceKm);
+        const bookUrl = `/book-ride?pickupLat=${encodeURIComponent(start[0])}&pickupLng=${encodeURIComponent(start[1])}&destLat=${encodeURIComponent(end[0])}&destLng=${encodeURIComponent(end[1])}&distanceKm=${encodeURIComponent(distanceKm.toFixed(2))}&timeMin=${encodeURIComponent(timeMin)}&fare=${encodeURIComponent(cost)}&from=${encodeURIComponent(userPickup ? 'Current Location' : monasteryObj.name.en)}&to=${encodeURIComponent(attractionObj.name.en)}`;
+        const content = `
+          <div style=\"font-family:Inter,system-ui,Arial;\"> 
+            <div style=\"font-weight:700;margin-bottom:6px;\">${lang.estimates_title}</div>
+            <div style=\"font-size:14px;color:#475569;\"> 
+              <div>${lang.road_dist}: <strong>${distanceKm.toFixed(2)} km</strong></div>
+              <div>${lang.est_time}: <strong>~${timeMin} minutes</strong></div>
+              <div>${lang.est_fare}: <strong>₹${cost}</strong></div>
+            </div>
+            ${userPickup ? '<div style=\\"font-size:12px;color:#64748b;margin-top:4px;\\">Pickup: Your current location</div>' : '<div style=\\"font-size:12px;color:#64748b;margin-top:4px;\\">Pickup: Monastery location (location permission denied)</div>'}
+            <div style=\"margin-top:10px;\"> 
+              <a href=\"${bookUrl}\" style=\"display:inline-block;background:#ff6d00;color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600;\">Book my ride</a>
+            </div>
+          </div>
+        `;
+        popup.setContent(content);
+        drawRoute(route.geometry, modeProfiles.taxi.color);
+    } else {
+        popup.setContent(`<div style=\"font-family:Inter,system-ui,Arial;max-width:240px;\">${lang.route_error}</div>`);
+    }
+}
+
+/* ------------------------------
+   4. UI, THEME, LANGUAGE MANAGEMENT
+   ------------------------------ */
+function setLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    document.querySelectorAll('[data-translate-key]').forEach(el => {
+        const key = el.dataset.translateKey;
+        if (translations[lang][key]) el.innerText = translations[lang][key];
+    });
+    initializeSidebarAndMarkers();
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`lang-${lang}`).classList.add('active');
+}
+
+function setTheme(theme) {
+    document.body.className = theme === 'dark' ? 'dark-mode' : '';
+    localStorage.setItem('theme', theme);
+    document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`theme-${theme}`).classList.add('active');
+    updateMapTiles(theme);
+}
+
+// TILE FIX: Using more reliable Stadia (Stamen) tiles for both light and dark modes
+function updateMapTiles(theme) {
+    const lightTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
+    const darkTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+    const attribution = '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>';
+    
+    if (window.tileLayer) map.removeLayer(window.tileLayer);
+    
+    window.tileLayer = L.tileLayer(theme === 'dark' ? darkTileUrl : lightTileUrl, { attribution, maxZoom: 20 }).addTo(map);
+}
+
+/* ------------------------------
+   5. INITIALIZATION & EVENT HANDLING
+   ------------------------------ */
+function initializeSidebarAndMarkers() {
+    const monasteryListDiv = document.getElementById('monasteryList');
+    monasteryListDiv.innerHTML = ''; monasteryLayer.clearLayers(); attractionLayer.clearLayers();
+    DATA.monasteries.forEach(m => {
+        const name = m.name[currentLanguage] || m.name.en;
+        const monasteryIcon = L.divIcon({ className: 'custom-div-icon', html: `<div class="map-pin" style="background-color:${m.color};"><div class="map-pin-icon">${m.icon}</div></div>`, iconSize: [30, 42], iconAnchor: [15, 42] });
+        L.marker(m.coords, { icon: monasteryIcon }).addTo(monasteryLayer).bindTooltip(name);
+        const card = document.createElement('div');
+        card.className = 'monastery-card';
+        card.innerHTML = `<div class="monastery-name" style="color:${m.color}">${m.icon} ${name}</div><div class="attractions-list"></div>`;
+        const attractionsList = card.querySelector('.attractions-list');
+        m.attractions.forEach(attr => {
+            const attrName = attr.name[currentLanguage] || attr.name.en;
+            const attractionIcon = L.divIcon({ className: 'custom-div-icon', html: `<div class="map-pin" style="background-color:${m.color};"><div class="map-pin-icon">${attr.icon}</div></div>`, iconSize: [30, 42], iconAnchor: [15, 42] });
+            const marker = L.marker(attr.coords, { icon: attractionIcon, riseOnHover: true, zIndexOffset: 1000 }).addTo(attractionLayer).bindTooltip(attrName);
+            attractionRegistry[attr.id] = { marker, monastery: m, attraction: attr };
+            marker.on('click', async () => {
+                openFarePopup(m, attr);
+            });
+            const item = document.createElement('div');
+            item.className = 'attraction-item'; item.innerText = `${attr.icon} ${attrName}`;
+            item.dataset.monasteryId = m.id; item.dataset.attractionId = attr.id;
+            attractionsList.appendChild(item);
+        });
+        if (openMonasteries.has(m.id)) { attractionsList.style.display = 'block'; }
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.attraction-item')) return;
+            const isVisible = attractionsList.style.display === 'block';
+            attractionsList.style.display = isVisible ? 'none' : 'block';
+            if (isVisible) { openMonasteries.delete(m.id); } else { openMonasteries.add(m.id); }
+            if (!isVisible) map.flyTo(m.coords, 14);
+        });
+        monasteryListDiv.appendChild(card);
+    });
+}
+document.getElementById('monasteryList').addEventListener('click', function(e) {
+    const target = e.target.closest('.attraction-item');
+    if (target) {
+        const monastery = DATA.monasteries.find(m => m.id === target.dataset.monasteryId);
+        const attraction = monastery.attractions.find(a => a.id === target.dataset.attractionId);
+        if (monastery && attraction) {
+            // Fly to the attraction marker and open fare popup
+            const reg = attractionRegistry[attraction.id];
+            if (reg && reg.marker) {
+                map.flyTo(reg.marker.getLatLng(), 14);
+            }
+            openFarePopup(monastery, attraction);
+        }
+    }
+});
+document.getElementById('closeInfo').addEventListener('click', () => {
+    document.getElementById('infoBox').classList.remove('visible');
+    if (currentRouteLayer) map.removeLayer(currentRouteLayer);
+});
+// Initial Load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedLanguage = localStorage.getItem('language') || 'en';
+    setTheme(savedTheme);
+    setLanguage(savedLanguage);
+});
+</script>
+</body>
+</html>
+
