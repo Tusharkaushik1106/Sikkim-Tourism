@@ -6,45 +6,137 @@ import { motion } from 'framer-motion'
 import LordIconButton from './lord-icon-button'
 import FeatureCard from './feature-card'
 
-// Updated monastery background images with high-quality sources
-const bgImages = [
-  'https://images.unsplash.com/photo-1573398643956-2b9e6ade3456?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1686851205339-96576bb72d6f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://images.unsplash.com/photo-1692759873514-6514e8b7696d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+// Updated monastery content with images and text
+const heroContent = [
+  {
+    image: 'https://images.unsplash.com/photo-1573398643956-2b9e6ade3456?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    title: 'Sacred Monasteries',
+    // subtitle: '“Where silence speaks and history breathes.”',
+    description: 'Immerse yourself in the rich cultural heritage of over 200 monasteries through virtual tours, interactive maps, and digital archives.',
+    stats: [
+      { value: '200+', label: 'Monasteries' },
+      { value: '5K+', label: 'Artifacts' },
+      { value: '12', label: 'Languages' }
+    ]
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1686851205339-96576bb72d6f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    title: 'Ancient Wisdom',
+    subtitle: '“Every stone tells a story, every prayer echoes eternity.”',
+    description: 'Discover centuries-old Buddhist teachings and practices preserved in manuscripts, murals, and architectural marvels across Sikkim.',
+    stats: [
+      { value: '800+', label: 'Years' },
+      { value: '15+', label: 'Sects' },
+      { value: '50+', label: 'Festivals' }
+    ]
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1692759873514-6514e8b7696d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    title: 'Living Heritage',
+    subtitle: '“Tradition meets tomorrow in every sacred hall.”',
+    description: 'Experience the vibrant monastic life through immersive digital experiences that connect ancient traditions with modern technology.',
+    stats: [
+      { value: '1000+', label: 'Monks' },
+      { value: '24/7', label: 'Virtual Access' },
+      { value: '4K', label: 'HD Quality' }
+    ]
+  }
 ]
 
-export default function HeroSection() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  
-  // Image carousel effect
+function useCountUp(target: string | number, duration = 1200) {
+  const [value, setValue] = useState(typeof target === 'number' ? 0 : '')
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        prevIndex === bgImages.length - 1 ? 0 : prevIndex + 1
-      )
-    }, 6000)
-    
-    return () => clearInterval(interval)
-  }, [])
+    let start = 0
+    let end = typeof target === 'number' ? Number(target) : parseInt(target)
+    if (isNaN(end)) {
+      setValue(target)
+      return
+    }
+    let startTime: number | null = null
+    function animateCountUp(ts: number) {
+      if (!startTime) startTime = ts
+      const progress = Math.min((ts - startTime) / duration, 1)
+      const current = Math.floor(progress * (end - start) + start)
+      setValue(current < end ? current : end)
+      if (progress < 1) requestAnimationFrame(animateCountUp)
+    }
+    setValue(0)
+    requestAnimationFrame(animateCountUp)
+    // eslint-disable-next-line
+  }, [target])
+  return value
+}
+
+export default function HeroSection() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const currentContent = heroContent[currentIndex]
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Content navigation dots with redesigned glassmorphism arrows */}
+      <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center items-center space-x-8 pointer-events-auto">
+        {/* Left Arrow */}
+        <button
+          type="button"
+          aria-label="Previous slide"
+          onClick={() => setCurrentIndex((currentIndex - 1 + heroContent.length) % heroContent.length)}
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-white/30 backdrop-blur-lg shadow-lg hover:bg-primary/30 transition-all duration-300 border border-white/40 focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="14" fill="rgba(255,255,255,0.18)" stroke="#fff" strokeWidth="2" />
+            <path d="M19 10l-6 6 6 6" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <animateTransform attributeName="transform" type="translate" values="0,0;-2,0;0,0" dur="1.2s" repeatCount="indefinite" />
+            </path>
+          </svg>
+        </button>
+        {/* Navigation Dots */}
+        <div className="flex space-x-3">
+          {heroContent.map((_, index) => (
+            <button
+              key={index}
+              className={`h-3 w-3 rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? 'bg-primary w-8 shadow-lg'
+                  : 'bg-white/50 hover:bg-white/70'
+              }`}
+              onClick={() => setCurrentIndex(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+        {/* Right Arrow */}
+        <button
+          type="button"
+          aria-label="Next slide"
+          onClick={() => setCurrentIndex((currentIndex + 1) % heroContent.length)}
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-white/30 backdrop-blur-lg shadow-lg hover:bg-primary/30 transition-all duration-300 border border-white/40 focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="14" fill="rgba(255,255,255,0.18)" stroke="#fff" strokeWidth="2" />
+            <path d="M13 10l6 6-6 6" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <animateTransform attributeName="transform" type="translate" values="0,0;2,0;0,0" dur="1.2s" repeatCount="indefinite" />
+            </path>
+          </svg>
+        </button>
+      </div>
+
       {/* Background image carousel */}
-      {bgImages.map((img, index) => (
+      {heroContent.map((content, index) => (
         <div
-          key={img}
-          className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+          key={content.image}
+          className="absolute inset-0 transition-opacity duration-1000 ease-in-out bg-gray-900"
           style={{ 
-            opacity: index === currentImageIndex ? 1 : 0,
-            zIndex: index === currentImageIndex ? 0 : -10
+            opacity: index === currentIndex ? 1 : 0,
+            zIndex: index === currentIndex ? 0 : -10
           }}
         >
           <Image
-            src={img}
+            src={content.image}
             alt={`Sikkim monastery ${index + 1}`}
             fill
             priority
-            className="object-cover"
+            className="object-cover object-center"
+            style={{ backgroundColor: '#222' }}
           />
           {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/50" />
@@ -137,13 +229,15 @@ export default function HeroSection() {
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="space-y-6"
                 >
-                  <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight">
+                  <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight flex flex-wrap items-center gap-4">
                     Explore Sikkim&apos;s
-                    <br />
-                    <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                      Sacred Monasteries
+                    <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent ml-3">
+                      {currentContent.title}
                     </span>
                   </h1>
+                  <div className="mt-2 text-lg italic text-accent font-medium">
+                    {currentContent.subtitle}
+                  </div>
                   
                   <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
                 </motion.div>
@@ -155,9 +249,7 @@ export default function HeroSection() {
                   transition={{ delay: 0.6, duration: 0.8 }}
                   className="text-xl text-gray-100 leading-relaxed max-w-lg font-light"
                 >
-                  Immerse yourself in the rich cultural heritage of over{' '}
-                  <span className="font-semibold text-primary">200 monasteries</span>{' '}
-                  through virtual tours, interactive maps, and digital archives.
+                  {currentContent.description}
                 </motion.p>
                 
                 {/* CTA Buttons */}
@@ -193,18 +285,26 @@ export default function HeroSection() {
                   transition={{ delay: 1, duration: 0.8 }}
                   className="flex items-center justify-start gap-12 pt-12"
                 >
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-primary">200+</div>
-                    <div className="text-sm text-gray-300">Monasteries</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-primary">5K+</div>
-                    <div className="text-sm text-gray-300">Artifacts</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-primary">12</div>
-                    <div className="text-sm text-gray-300">Languages</div>
-                  </div>
+                  {currentContent.stats.map((stat, index) => {
+                    // Extract numeric part for count-up
+                    const numMatch = stat.value.match(/\d+/)
+                    const numValue = numMatch ? parseInt(numMatch[0]) : stat.value
+                    const animatedValue = useCountUp(numValue, 1200 + index * 300)
+                    return (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, scale: 0.7 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 1.2 + index * 0.2, duration: 0.7, type: 'spring' }}
+                        className="text-center bg-white/10 backdrop-blur-md rounded-xl px-6 py-4 shadow-lg border border-white/20"
+                      >
+                        <div className="text-3xl font-bold text-primary">
+                          {typeof animatedValue === 'number' ? `${animatedValue}${stat.value.replace(/\d+/,'')}` : stat.value}
+                        </div>
+                        <div className="text-sm text-gray-300">{stat.label}</div>
+                      </motion.div>
+                    )
+                  })}
                 </motion.div>
               </motion.div>
             </div>
@@ -245,21 +345,6 @@ export default function HeroSection() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Image indicator dots */}
-      <div className="absolute bottom-8 left-0 right-0 z-10 flex justify-center space-x-2">
-        {bgImages.map((_, index) => (
-          <button
-            key={index}
-            className={`h-2 w-2 rounded-full transition-all ${
-              index === currentImageIndex
-                ? 'bg-white w-6'
-                : 'bg-white bg-opacity-50'
-            }`}
-            onClick={() => setCurrentImageIndex(index)}
-          />
-        ))}
       </div>
     </div>
   )

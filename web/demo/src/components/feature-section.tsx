@@ -6,6 +6,7 @@ import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import Image from 'next/image'
 import AnimatedButton from './animated-button'
+import Marquee from 'react-fast-marquee';
 
 const features = [
   {
@@ -71,38 +72,54 @@ export default function FeatureSection() {
   }
 
   return (
-    <section ref={ref} className="py-12 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-gray-900">
-      <div className="container-custom relative">
-        {/* Decorative elements
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-          <Image 
-            src="/images/mandala-pattern.svg" 
-            width={300} 
-            height={300} 
-            alt="Decorative mandala pattern" 
-            className="absolute -top-20 -left-20 opacity-5 dark:opacity-[0.03]"
-          />
-          <Image 
-            src="/images/buddha-silhouette.svg" 
-            width={200} 
-            height={200} 
-            alt="Buddha silhouette" 
-            className="absolute -bottom-20 -right-10 opacity-5 dark:opacity-[0.03]"
-          />
+    <section ref={ref} className="relative py-12 overflow-hidden">
+      {/* Out-of-box animated gradient background with floating glass blobs */}
+      <div className="absolute inset-0 -z-10">
+        <div className="w-full h-full animate-gradient bg-gradient-to-br from-[#ffecd2] via-[#fcb69f] to-[#a1c4fd] dark:from-[#232526] dark:via-[#414345] dark:to-[#485563]" />
+        {/* Floating glass blobs */}
+        <div className="absolute top-10 left-10 w-72 h-72 bg-white/30 backdrop-blur-xl rounded-full shadow-2xl animate-blob1" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-200/30 dark:bg-blue-900/30 backdrop-blur-xl rounded-full shadow-2xl animate-blob2" />
+        <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-orange-200/30 dark:bg-orange-900/30 backdrop-blur-xl rounded-full shadow-2xl animate-blob3" />
+      </div>
+      <style jsx>{`
+        .animate-gradient {
+          background-size: 400% 400%;
+          animation: gradientMove 18s ease infinite;
+        }
+        @keyframes gradientMove {
+          0% {background-position: 0% 50%;}
+          50% {background-position: 100% 50%;}
+          100% {background-position: 0% 50%;}
+        }
+        .animate-blob1 {
+          animation: blobMove1 14s ease-in-out infinite alternate;
+        }
+        .animate-blob2 {
+          animation: blobMove2 18s ease-in-out infinite alternate;
+        }
+        .animate-blob3 {
+          animation: blobMove3 16s ease-in-out infinite alternate;
+        }
+        @keyframes blobMove1 {
+          0% {transform: translateY(0) scale(1);}
+          100% {transform: translateY(-40px) scale(1.1);}
+        }
+        @keyframes blobMove2 {
+          0% {transform: translateX(0) scale(1);}
+          100% {transform: translateX(-60px) scale(1.05);}
+        }
+        @keyframes blobMove3 {
+          0% {transform: translate(-50%, -50%) scale(1);}
+          100% {transform: translate(-60%, -60%) scale(1.15);}
+        }
+      `}</style>
+      <div className="container-custom relative z-10">
+        {/* News ticker headline and subheading */}
+        <div className="mb-10">
+          <Marquee gradient={false} speed={60} className="text-4xl font-bold text-orange-600 dark:text-orange-400 py-2">
+            Explore Our Features &nbsp;|&nbsp; Preserving Heritage Through Technology &nbsp;|&nbsp; Monastery360 offers innovative tools to explore, learn about, and preserve Sikkim's monastery heritage. &nbsp;
+          </Marquee>
         </div>
-         */}
-        <div className="text-center mb-16 relative z-10">
-          <span className="inline-block text-4xl font-semibold text-orange-500 dark:text-orange-400 mb-2">
-            Explore Our Features
-          </span>
-          <h2 className="font-heading text-3xl font-bold sm:text-4xl text-gray-900 dark:text-white">
-            Preserving Heritage Through Technology
-          </h2>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Monastery360 offers innovative tools to explore, learn about, and preserve Sikkim's monastery heritage.
-          </p>
-        </div>
-
         <motion.div 
           variants={containerVariants}
           initial="hidden"
@@ -113,7 +130,7 @@ export default function FeatureSection() {
             <motion.div
               key={feature.id}
               variants={itemVariants}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl"
+              className="bg-white/60 dark:bg-gray-900/60 rounded-xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl backdrop-blur-lg border border-white/30 dark:border-gray-700/30"
             >
               <div className="relative h-48 w-full overflow-hidden">
                 <Image
@@ -130,7 +147,7 @@ export default function FeatureSection() {
                   </div>
                   <h3 className="font-heading text-xl font-bold text-gray-900 dark:text-white">{feature.name}</h3>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 mb-5">{feature.description}</p>
+                <p className="text-gray-700 dark:text-gray-300 mb-5">{feature.description}</p>
                 <AnimatedButton 
                   href={feature.link} 
                   variant="outline" 
