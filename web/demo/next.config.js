@@ -10,7 +10,8 @@ const nextConfig = {
       'static.vecteezy.com',
       'www.transparentpng.com',
       'cdn.pixabay.com',
-      'cdn.lordicon.com'
+      'cdn.lordicon.com',
+      'avatars.githubusercontent.com'
     ],
   },
 }
