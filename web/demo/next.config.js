@@ -10,7 +10,13 @@ const nextConfig = {
       'static.vecteezy.com',
       'www.transparentpng.com',
       'cdn.pixabay.com',
-      'cdn.lordicon.com'
+      "img.favpng.com",
+      'cdn.lordicon.com',
+      "encrypted-tbn0.gstatic.com",
+      "tripxl.com",
+      "amuseapp.art",
+      "imgcdn.stablediffusionweb.com",
+      "www.hrw.org",
     ],
   },
 }

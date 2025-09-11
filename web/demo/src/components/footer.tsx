@@ -13,7 +13,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Image
-                src="/images/national-emblem.png"
+                src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"
                 alt="National Emblem of India"
                 width={40}
                 height={40}
@@ -141,7 +141,7 @@ export default function Footer() {
               alt="G20 Logo" 
               width={40} 
               height={40} 
-              className="h-10 w-auto"
+              className="h-10 w-20"
             />
             <Image 
               src="/images/digital-india-logo.png" 

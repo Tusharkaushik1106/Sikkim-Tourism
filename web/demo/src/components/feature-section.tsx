@@ -14,7 +14,7 @@ const features = [
     description: 'Experience immersive 360° panoramic views of monastery interiors and surroundings with narrated walkthroughs.',
     icon: FiCamera,
     link: '/virtual-tours',
-    image: '/images/virtual-tour-rumtek.jpg'
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ79hd8Q7rZGHtObY4kJPKRKTOp6O6uYN-UZQ&s'
   },
   {
     id: 2,
@@ -22,23 +22,23 @@ const features = [
     description: 'Discover geo-tagged monastery locations with travel routes and nearby attractions.',
     icon: FiMap,
     link: '/map',
-    image: '/images/interactive-map.jpg'
+    image: 'https://imgcdn.stablediffusionweb.com/2024/5/2/6edba0dd-0d01-4ed8-b2b6-d4d543128256.jpg'
   },
   {
     id: 3,
     name: 'Digital Archives',
     description: 'Access scanned manuscripts, murals, and historical documents with AI-powered search.',
     icon: FiBook,
-    link: '/archives',
-    image: '/images/archives-thangka.jpg'
+    link: '/archive',
+    image: 'https://tripxl.com/blog/wp-content/uploads/2024/08/Sanga-Choeling-Monastery.jpg'
   },
   {
     id: 4,
     name: 'Smart Audio Guide',
     description: 'Use location-based audio guides with Bluetooth beacons and offline mode for remote areas.',
     icon: FiHeadphones,
-    link: '/audio-guide',
-    image: '/images/audio-guide-app.jpg'
+    link: '/app',
+    image: 'https://amuseapp.art/wp-content/uploads/2025/03/customer-chatbot-dialog-smartphone-screen-ai-artificial-intelligence-service-automation-technology-concept-1024x683.jpg'
   },
   {
     id: 5,
@@ -46,7 +46,7 @@ const features = [
     description: 'Stay updated with monastery events, festivals, and ritual schedules.',
     icon: FiCalendar,
     link: '/calendar',
-    image: '/images/festival-calendar.jpg'
+    image: '/images/CulturalCalander.png'
   }
 ]
 
@@ -71,9 +71,9 @@ export default function FeatureSection() {
   }
 
   return (
-    <section ref={ref} className="py-20 bg-gray-50 dark:bg-gray-900">
+    <section ref={ref} className="py-12 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-gray-900">
       <div className="container-custom relative">
-        {/* Decorative elements */}
+        {/* Decorative elements
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
           <Image 
             src="/images/mandala-pattern.svg" 
@@ -90,15 +90,15 @@ export default function FeatureSection() {
             className="absolute -bottom-20 -right-10 opacity-5 dark:opacity-[0.03]"
           />
         </div>
-        
+         */}
         <div className="text-center mb-16 relative z-10">
-          <span className="inline-block text-sm font-semibold text-primary mb-2">
+          <span className="inline-block text-4xl font-semibold text-orange-500 dark:text-orange-400 mb-2">
             Explore Our Features
           </span>
-          <h2 className="font-heading text-3xl font-bold sm:text-4xl">
+          <h2 className="font-heading text-3xl font-bold sm:text-4xl text-gray-900 dark:text-white">
             Preserving Heritage Through Technology
           </h2>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Monastery360 offers innovative tools to explore, learn about, and preserve Sikkim's monastery heritage.
           </p>
         </div>
@@ -125,12 +125,12 @@ export default function FeatureSection() {
               </div>
               <div className="p-6">
                 <div className="flex items-center mb-4">
-                  <div className="p-2 bg-primary bg-opacity-10 rounded-md mr-4">
-                    <feature.icon className="h-6 w-6 text-primary" />
+                  <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-md mr-4">
+                    <feature.icon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
                   </div>
-                  <h3 className="font-heading text-xl font-bold">{feature.name}</h3>
+                  <h3 className="font-heading text-xl font-bold text-gray-900 dark:text-white">{feature.name}</h3>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 mb-5">{feature.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 mb-5">{feature.description}</p>
                 <AnimatedButton 
                   href={feature.link} 
                   variant="outline" 
