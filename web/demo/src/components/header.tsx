@@ -8,10 +8,10 @@ import { motion, AnimatePresence, MotionConfig } from 'framer-motion'
 import { ThemeToggle } from './theme-toggle'
 import { FiMenu, FiX, FiMapPin, FiBookOpen, FiCalendar, FiInfo, FiHome, FiCamera } from 'react-icons/fi'
 import { cn } from '@/lib/utils'
-import RotatingPrayerWheel from './rotating-prayer-wheel'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 const navigation = [
-  { name: 'Home', href: '/', icon: <FiHome className="h-4 w-4" /> },
+  // { name: 'Home', href: '/', icon: <FiHome className="h-4 w-4" /> },
   { name: 'Virtual Tours', href: '/virtual-tours', icon: <FiCamera className="h-4 w-4" /> },
   { name: 'Interactive Map', href: '/map', icon: <FiMapPin className="h-4 w-4" /> },
   { name: 'Digital Archives', href: '/archive', icon: <FiBookOpen className="h-4 w-4" /> },
@@ -22,7 +22,9 @@ const navigation = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const { data: session, status } = useSession()
   
 
   // Handle scroll event
@@ -59,7 +61,7 @@ export default function Header() {
             </>
           )}
           
-          <nav className="flex items-center justify-between">
+          <nav className="flex gap-10 items-center justify-between">
             {/* Left side - Logo and brand */}
             <motion.div 
               className="flex items-center space-x-4 z-10"
@@ -80,7 +82,7 @@ export default function Header() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="absolute -inset-1 rounded-full bg-primary/10 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute -inset-1 rounded-full bg-white/30 dark:bg-gray-30 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   />
                 </div>
                 
@@ -89,12 +91,12 @@ export default function Header() {
                     layout
                     className={cn(
                       "font-heading font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary transition-all duration-300",
-                      isScrolled ? "text-lg" : "text-xl"
+                      isScrolled ? "text-2xl" : "text-3xl"
                     )}
                   >
                     Monastery360
                   </motion.span>
-                  <span className="text-xs text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
                     Ministry of Tourism, Government of India
                   </span>
                 </div>
@@ -116,7 +118,7 @@ export default function Header() {
                     <Link 
                       href={item.href}
                       className={cn(
-                        "relative px-3 py-2 text-sm font-medium rounded-md flex items-center gap-1.5 transition-colors group",
+                        "relative px-3 py-2 text-sm font-medium rounded-md flex items-center gap-1.5 transition-colors group whitespace-nowrap",
                         isActive ? "text-primary" : "hover:text-primary"
                       )}
                     >
@@ -148,7 +150,36 @@ export default function Header() {
               
               <div className="flex items-center pl-2 space-x-3 border-l border-gray-200 dark:border-gray-700 ml-3">
                 <ThemeToggleButton />
-                <RotatingPrayerWheel size="sm" className="hidden lg:block" />
+                {status === 'loading' ? (
+                  <div className="h-9 w-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+                ) : session ? (
+                  <div className="flex items-center gap-3">
+                    {session.user?.image && (
+                      <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-200 dark:ring-gray-700">
+                        <Image
+                          src={session.user.image}
+                          alt={session.user.name || 'User'}
+                          width={32}
+                          height={32}
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <button
+                      onClick={() => signOut()}
+                      className="px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => signIn('google')}
+                    className="px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
+                  >
+                    Sign In
+                  </button>
+                )}
               </div>
             </div>
 
@@ -240,7 +271,7 @@ export default function Header() {
                       <Link
                         href={item.href}
                         className={cn(
-                          "flex items-center gap-3 px-3 py-3 text-base font-medium rounded-lg transition-colors",
+                          "flex items-center gap-3 px-3 py-3 text-base font-medium rounded-lg transition-colors whitespace-nowrap",
                           isActive 
                             ? "bg-primary/10 text-primary dark:bg-primary/20" 
                             : "hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -288,7 +319,37 @@ export default function Header() {
                   className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700"
                 >
                   <div className="flex justify-center">
-                    <RotatingPrayerWheel size="md" />
+                    {status === 'loading' ? (
+                      <div className="h-10 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+                    ) : session ? (
+                      <div className="flex flex-col items-center gap-3">
+                        {session.user?.image && (
+                          <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-gray-200 dark:ring-gray-700">
+                            <Image
+                              src={session.user.image}
+                              alt={session.user.name || 'User'}
+                              width={48}
+                              height={48}
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
+                        <span className="text-sm text-gray-600 dark:text-gray-300">{session.user?.name}</span>
+                        <button
+                          onClick={() => signOut()}
+                          className="w-full px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => signIn('google')}
+                        className="w-full px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
+                      >
+                        Sign In with Google
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               </motion.div>

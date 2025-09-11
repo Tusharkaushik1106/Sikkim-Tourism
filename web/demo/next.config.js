@@ -11,8 +11,15 @@ const nextConfig = {
       'www.transparentpng.com',
       'cdn.pixabay.com',
       'cdn.lordicon.com',
-      'avatars.githubusercontent.com'
-    ],
+      'avatars.githubusercontent.com',
+      'lh3.googleusercontent.com',
+  "img.favpng.com",
+  "encrypted-tbn0.gstatic.com",
+  "tripxl.com",
+  "amuseapp.art",
+  "imgcdn.stablediffusionweb.com",
+  "www.hrw.org"
+],
   },
 }
 

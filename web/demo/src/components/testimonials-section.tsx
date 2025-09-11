@@ -12,7 +12,7 @@ const testimonials = [
     content: "Monastery360 has revolutionized how we preserve and share our cultural heritage with the world. The digital archives feature has been instrumental in documenting our ancient manuscripts.",
     name: "Lama Dorje Rinpoche",
     role: "Head Monk, Rumtek Monastery",
-    avatar: "https://images.unsplash.com/photo-1522560714208-7eee4344d8cc?q=80&w=150&h=150&fit=crop"
+    avatar: "https://www.hrw.org/sites/default/files/styles/embed_xxl/public/media_2025/04/202504asia_tibet_humkar.jpg?itok=f57bd5BL"
   },
   {
     id: 2,
