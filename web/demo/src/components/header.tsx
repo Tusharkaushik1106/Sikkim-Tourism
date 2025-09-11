@@ -8,6 +8,7 @@ import { motion, AnimatePresence, MotionConfig } from 'framer-motion'
 import { ThemeToggle } from './theme-toggle'
 import { FiMenu, FiX, FiMapPin, FiBookOpen, FiCalendar, FiInfo, FiHome, FiCamera } from 'react-icons/fi'
 import { cn } from '@/lib/utils'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 const navigation = [
   // { name: 'Home', href: '/', icon: <FiHome className="h-4 w-4" /> },
@@ -21,7 +22,10 @@ const navigation = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const { data: session, status } = useSession()
+  
 
   // Handle scroll event
   useEffect(() => {
@@ -146,6 +150,36 @@ export default function Header() {
               
               <div className="flex items-center pl-2 space-x-3 border-l border-gray-200 dark:border-gray-700 ml-3">
                 <ThemeToggleButton />
+                {status === 'loading' ? (
+                  <div className="h-9 w-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+                ) : session ? (
+                  <div className="flex items-center gap-3">
+                    {session.user?.image && (
+                      <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-200 dark:ring-gray-700">
+                        <Image
+                          src={session.user.image}
+                          alt={session.user.name || 'User'}
+                          width={32}
+                          height={32}
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <button
+                      onClick={() => signOut()}
+                      className="px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => signIn('google')}
+                    className="px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
+                  >
+                    Sign In
+                  </button>
+                )}
               </div>
             </div>
 
@@ -285,6 +319,37 @@ export default function Header() {
                   className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700"
                 >
                   <div className="flex justify-center">
+                    {status === 'loading' ? (
+                      <div className="h-10 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+                    ) : session ? (
+                      <div className="flex flex-col items-center gap-3">
+                        {session.user?.image && (
+                          <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-gray-200 dark:ring-gray-700">
+                            <Image
+                              src={session.user.image}
+                              alt={session.user.name || 'User'}
+                              width={48}
+                              height={48}
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
+                        <span className="text-sm text-gray-600 dark:text-gray-300">{session.user?.name}</span>
+                        <button
+                          onClick={() => signOut()}
+                          className="w-full px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => signIn('google')}
+                        className="w-full px-4 py-2 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
+                      >
+                        Sign In with Google
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               </motion.div>

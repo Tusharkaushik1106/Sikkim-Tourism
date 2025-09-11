@@ -10,14 +10,16 @@ const nextConfig = {
       'static.vecteezy.com',
       'www.transparentpng.com',
       'cdn.pixabay.com',
-      "img.favpng.com",
       'cdn.lordicon.com',
-      "encrypted-tbn0.gstatic.com",
-      "tripxl.com",
-      "amuseapp.art",
-      "imgcdn.stablediffusionweb.com",
-      "www.hrw.org",
-    ],
+      'avatars.githubusercontent.com',
+      'lh3.googleusercontent.com',
+  "img.favpng.com",
+  "encrypted-tbn0.gstatic.com",
+  "tripxl.com",
+  "amuseapp.art",
+  "imgcdn.stablediffusionweb.com",
+  "www.hrw.org"
+],
   },
 }
 
