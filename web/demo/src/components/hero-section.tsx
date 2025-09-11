@@ -230,7 +230,7 @@ export default function HeroSection() {
                     title="Digital Archives"
                     description="Ancient manuscripts & murals"
                     icon="📜"
-                    href="/archives"
+                    href="/archive"
                     delay={1}
                   />
                   <FeatureCard 
