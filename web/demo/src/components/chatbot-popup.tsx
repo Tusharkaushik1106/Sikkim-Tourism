@@ -1,8 +1,9 @@
-"use client";
+"use client"
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { FiSearch } from 'react-icons/fi';
 
 export default function ChatbotPopup() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +43,7 @@ export default function ChatbotPopup() {
           >
             <div className="flex justify-between items-start">
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                Need help finding a monastery?
+                Need help? Try our <span className="font-bold text-orange-500">AI Powered Search</span>
               </p>
               <button
                 onClick={() => { setShowInitialMessage(false); setHidePopup(true); }}
@@ -69,28 +70,7 @@ export default function ChatbotPopup() {
         className="fixed bottom-8 right-8 p-4 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full shadow-lg hover:shadow-orange-500/20 transition-all duration-300 z-[101]"
         style={{ pointerEvents: "auto" }}
       >
-        <svg
-          className="w-6 h-6 text-white"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          {isOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-            />
-          )}
-        </svg>
+        <FiSearch className="w-6 h-6 text-white" />
       </button>
 
       <AnimatePresence>
@@ -104,7 +84,7 @@ export default function ChatbotPopup() {
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold dark:text-white">
-                Welcome to Monastery Search!
+                Welcome to <span className="text-orange-500">AI Powered Search!</span>
               </h3>
               <button
                 onClick={() => { setIsOpen(false); setHidePopup(true); setShowInitialMessage(false); }}
