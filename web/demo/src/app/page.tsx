@@ -20,7 +20,7 @@ export default function Home() {
         <CtaSection />
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      {/* <div className="container mx-auto px-4 py-12">
         <h1 className="text-5xl font-bold text-center mb-4 bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
           Welcome to Monastery360
         </h1>
@@ -43,7 +43,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
         </div>
-      </div>
+      </div> */}
 
       <ChatbotPopup />
       <Footer />

@@ -104,17 +104,17 @@ export default function AboutPage() {
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 relative">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-56 pb-24 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="font-heading text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-300 dark:to-white">
+            <h1 className="font-heading text-5xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-300 dark:to-white">
               About Monastery360°
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mt-6 mb-8 leading-relaxed">
               Discover Sikkim's spiritual heritage through immersive virtual tours and interactive maps. 
               Our platform brings ancient monasteries to life with 360° views and detailed cultural insights.
             </p>
