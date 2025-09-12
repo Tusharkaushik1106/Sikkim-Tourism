@@ -19,7 +19,7 @@ export default function Footer() {
                 height={40}
                 className="national-emblem"
               />
-              <span className="font-heading text-lg font-bold">Monastery360</span>
+              <span className="font-heading text-lg text-gray-800 font-bold">Monastery360</span>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               A digital heritage platform showcasing the cultural treasures of Sikkim's monasteries.
@@ -42,7 +42,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-heading text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-heading text-lg text-gray-800 font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/virtual-tours" className="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
@@ -69,7 +69,7 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="font-heading text-lg font-semibold mb-4">Resources</h3>
+            <h3 className="font-heading text-gray-800 text-lg font-semibold mb-4">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/about" className="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
@@ -101,7 +101,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="font-heading text-lg font-semibold mb-4">Contact Us</h3>
+            <h3 className="font-heading text-lg text-gray-800 font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start">
                 <FiMapPin className="mt-1 mr-2 text-primary" />

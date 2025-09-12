@@ -18,7 +18,9 @@ const nextConfig = {
   "tripxl.com",
   "amuseapp.art",
   "imgcdn.stablediffusionweb.com",
-  "www.hrw.org"
+  "www.hrw.org",
+  "www.trawell.in",
+  "encrypted-tbn0.gstatic.com"
 ],
   },
 }

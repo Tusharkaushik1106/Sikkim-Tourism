@@ -42,7 +42,7 @@ const archiveData: ArchiveItem[] = [
     year: 1985,
     location: "Gangtok Cultural Center, East Sikkim",
     thumbnail:
-      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgt2VvwfLcp6E1rkVfPkKSWHVAEEA6hDyDtw&s",
     tags: [
       "culture",
       "dance",
@@ -66,7 +66,7 @@ const archiveData: ArchiveItem[] = [
     year: 1578,
     location: "Rumtek Monastery, East Sikkim",
     thumbnail:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=300&fit=crop&crop=center",
+      "https://www.trawell.in/admin/images/upload/723415296Gangtok_Rumtek_Monastery_Main.jpg",
     tags: [
       "buddhism",
       "manuscripts",

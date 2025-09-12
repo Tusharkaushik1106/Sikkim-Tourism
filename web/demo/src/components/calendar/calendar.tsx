@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, X, MapPin, Calendar as CalendarIcon, Loader2
 import { CulturalEvent } from '@/lib/events'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import { signIn, useSession } from 'next-auth/react'
 
 const categoryFilters = ['All', 'Festival', 'Religious', 'Cultural', 'Harvest', 'Holiday'] as const;
 type Category = typeof categoryFilters[number];
@@ -25,6 +26,22 @@ export default function CulturalCalendar() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('All')
   const [events, setEvents] = useState<CulturalEvent[]>([])
   const [isLoading, setIsLoading] = useState(true);
+  const { data: session, status } = useSession();
+  const [redirectEventId, setRedirectEventId] = useState<string | null>(null);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [pendingEventId, setPendingEventId] = useState<string | null>(null);
+
+  // After login, redirect to booking page if needed
+  useEffect(() => {
+    if (
+      redirectEventId &&
+      status === 'authenticated'
+    ) {
+      window.location.href = `/book-event?eventId=${redirectEventId}`;
+      setRedirectEventId(null);
+      setPendingEventId(null);
+    }
+  }, [redirectEventId, status]);
 
   useEffect(() => {
     const getEvents = async () => {
@@ -65,24 +82,33 @@ export default function CulturalCalendar() {
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
 
-// Add this function to generate booking links only for Sikkim events
-const BookingButton = ({ event }: { event: any }) => {
-  // Check if event is Sikkim-related
-  const isSikkimEvent = event.location?.toLowerCase().includes('sikkim') || 
-                        event.title?.toLowerCase().includes('sikkim') ||
-                        event.description?.toLowerCase().includes('sikkim');
-  
-  if (!isSikkimEvent) return null;
-  
-  return (
-    <Link 
-      href={`/book-event?eventId=${event.id}`}
-      className="inline-flex items-center px-3 py-1 mt-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
-    >
-      Book Now
-    </Link>
-  );
-};  return (
+  // Add this function to generate booking links only for Sikkim events
+  const BookingButton = ({ event }: { event: any }) => {
+    // Check if event is Sikkim-related
+    const isSikkimEvent = event.location?.toLowerCase().includes('sikkim') || 
+                          event.title?.toLowerCase().includes('sikkim') ||
+                          event.description?.toLowerCase().includes('sikkim');
+    
+    if (!isSikkimEvent) return null;
+
+    const handleBookClick = () => {
+      if (status === 'authenticated') {
+        window.location.href = `/book-event?eventId=${event.id}`;
+      } else {
+        setPendingEventId(event.id);
+        setShowLoginPopup(true);
+      }
+    };
+
+    return (
+      <button
+        onClick={handleBookClick}
+        className="inline-flex items-center px-3 py-1 mt-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
+      >
+        Book Now
+      </button>
+    );
+  };  return (
     <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl shadow-lg backdrop-blur-xl border border-gray-200 dark:border-gray-800">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
@@ -405,6 +431,35 @@ const BookingButton = ({ event }: { event: any }) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Popup for login */}
+      {showLoginPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full text-center">
+            <h2 className="text-lg font-semibold mb-3">Sign In Required</h2>
+            <p className="mb-5 text-gray-700">You need to sign in to book an event. Would you like to sign in now?</p>
+            <div className="flex justify-center gap-4">
+              <button
+                className="px-5 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                onClick={() => {
+                  setShowLoginPopup(false);
+                  setRedirectEventId(pendingEventId);
+                  // Pass callbackUrl so after login, user is redirected to booking page
+                  signIn('google', { callbackUrl: `/book-event?eventId=${pendingEventId}` });
+                }}
+              >
+                Yes
+              </button>
+              <button
+                className="px-5 py-2 rounded bg-gray-300 text-gray-700 font-semibold hover:bg-gray-400"
+                onClick={() => setShowLoginPopup(false)}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
