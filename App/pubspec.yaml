@@ -30,7 +30,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  shared_preferences: ^2.2.0
+  google_maps_flutter: ^2.13.1
+  flutter_google_street_view: ^1.0.2
+  permission_handler: ^11.3.1
+  flutter_gemini: ^3.0.0
+  google_generative_ai: ^0.4.6
+  dash_chat_2: ^0.0.21
+  image_picker: ^1.2.0
+  flutter_tts: ^4.0.2
+  connectivity_plus: ^6.1.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.4
+  flutter_displaymode: ^0.6.0
+  firebase_core: ^3.4.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.4
+  google_sign_in: ^6.2.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -56,6 +73,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/fonts/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
