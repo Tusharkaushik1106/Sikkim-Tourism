@@ -154,20 +154,27 @@ export default function Header() {
                   <div className="h-9 w-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
                 ) : session ? (
                   <div className="flex items-center gap-3">
-                    {session.user?.image && (
-                      <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-200 dark:ring-gray-700">
+                    {/* Account Circle */}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center overflow-hidden border-2 border-white dark:border-gray-800 shadow">
+                      {session.user?.image ? (
                         <Image
                           src={session.user.image}
-                          alt={session.user.name || 'User'}
-                          width={32}
-                          height={32}
-                          className="object-cover"
+                          alt={session.user.name || "Account"}
+                          width={40}
+                          height={40}
+                          className="w-full h-full object-cover rounded-full"
+                          style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "9999px" }}
                         />
-                      </div>
-                    )}
+                      ) : (
+                        <span className="text-white font-bold text-lg">
+                          {session.user?.name?.charAt(0) || "A"}
+                        </span>
+                      )}
+                    </div>
+                    {/* Sign In/Out Button */}
                     <button
                       onClick={() => signOut()}
-                      className="px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      className="min-w-[90px] max-w-[140px] px-3 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold shadow hover:scale-105 transition-all whitespace-nowrap"
                     >
                       Sign Out
                     </button>
