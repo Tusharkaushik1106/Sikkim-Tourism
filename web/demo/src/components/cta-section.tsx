@@ -32,6 +32,7 @@ export default function CtaSection() {
           alt="Monastery pattern"
           fill
           className="opacity-10 object-cover"
+          priority // Fix Next.js warning for background images
         />
       </div>
       

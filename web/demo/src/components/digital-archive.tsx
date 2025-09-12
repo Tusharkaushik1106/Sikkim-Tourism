@@ -804,6 +804,19 @@ const categories = [
   },
 ];
 
+// Helper for lottery animation
+function scrambleValue(finalValue: string, progress: number) {
+  const match = finalValue.match(/^([\d,\.]+)(.*)$/)
+  if (!match) return finalValue
+  const digits = match[1]
+  const suffix = match[2]
+  if (progress < 1) {
+    let scrambled = digits.replace(/\d/g, () => Math.floor(Math.random() * 10).toString())
+    return scrambled + suffix
+  }
+  return finalValue
+}
+
 export default function DigitalArchive() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -812,10 +825,21 @@ export default function DigitalArchive() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
   const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
+  const [lotteryProgress, setLotteryProgress] = useState(Array(7).fill(0))
 
   const heroRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLDivElement>(null);
+
+  const statsNumbers = [
+    "28 Peaks",
+    "200+ Monasteries",
+    "5000+ Species",
+    "30,000+",
+    "300+",
+    "2,500+",
+    "100%"
+  ]
 
   // Intersection Observer for animations
   useEffect(() => {
@@ -881,6 +905,19 @@ export default function DigitalArchive() {
 
     setFilteredItems(filtered);
   }, [searchTerm, selectedCategory, selectedYear]);
+  
+  useEffect(() => {
+    let frame = 0
+    const totalFrames = 24
+    const interval = setInterval(() => {
+      frame++
+      setLotteryProgress(prev =>
+        prev.map((p, i) => Math.min(1, frame / totalFrames - i * 0.08))
+      )
+      if (frame >= totalFrames + statsNumbers.length * 2) clearInterval(interval)
+    }, 32)
+    return () => clearInterval(interval)
+  }, [])
 
   const handleLike = (itemId: string) => {
     setLikedItems((prev) => {
@@ -1002,17 +1039,23 @@ export default function DigitalArchive() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
               <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-xl flex flex-col items-center">
                 <FiAward className="w-16 h-16 mb-2 text-yellow-900 dark:text-yellow-300 animate-spin-slow" />
-                <div className="text-3xl font-bold text-white">28 Peaks</div>
+                <div className="text-3xl font-bold text-white">
+                  {scrambleValue("28 Peaks", lotteryProgress[0])}
+                </div>
                 <div className="text-blue-200">Above 7000m</div>
               </div>
               <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-xl flex flex-col items-center">
                 <FiHome className="w-16 h-16 mb-2 text-orange-900 dark:text-orange-300 animate-spin-slow" />
-                <div className="text-3xl font-bold text-white">200+ Monasteries</div>
+                <div className="text-3xl font-bold text-white">
+                  {scrambleValue("200+ Monasteries", lotteryProgress[1])}
+                </div>
                 <div className="text-blue-200">Spiritual Sites</div>
               </div>
               <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-6 border border-white/30 shadow-xl flex flex-col items-center">
                 <FiTag className="w-16 h-16 mb-2 text-green-900 dark:text-green-300 animate-spin-slow" />
-                <div className="text-3xl font-bold text-white">5000+ Species</div>
+                <div className="text-3xl font-bold text-white">
+                  {scrambleValue("5000+ Species", lotteryProgress[2])}
+                </div>
                 <div className="text-blue-200">Flora & Fauna</div>
               </div>
             </div>
@@ -1078,7 +1121,7 @@ export default function DigitalArchive() {
                   {stat.icon}
                 </div>
                 <div className="text-4xl md:text-5xl font-black text-gray-800 dark:text-gray-100 mb-2">
-                  {stat.number}
+                  {scrambleValue(stat.number, lotteryProgress[index + 3])}
                 </div>
                 <div className="text-gray-600 dark:text-gray-400 font-semibold text-lg">
                   {stat.label}
