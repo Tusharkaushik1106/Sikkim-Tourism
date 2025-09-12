@@ -29,8 +29,6 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "src/app/api/tour-resource/route.ts"
-  ],
-  "exclude": ["node_modules"]
+    "node_modules"
+  ]
 }
