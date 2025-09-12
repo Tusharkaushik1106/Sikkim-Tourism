@@ -151,13 +151,6 @@ export default function HeroSection() {
           transition={{ duration: 1.5, delay: 0.5 }}
           className="absolute top-32 right-5"
         >
-          <Image 
-            src="https://static.vecteezy.com/system/resources/previews/011/571/519/original/mandala-circle-pattern-tibetan-mandala-decorative-ornament-free-png.png" 
-            width={220} 
-            height={220} 
-            alt="Decorative mandala" 
-            className="opacity-30 dark:opacity-20"
-          />
         </motion.div>
         
         <motion.div

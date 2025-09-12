@@ -39,7 +39,7 @@ export default function RumtekTourPage() {
                 <span className="text-lg">🏛️</span>
               </div>
               <div>
-                <h1 className="font-heading text-4xl md:text-5xl font-bold">Tawang Monastery</h1>
+                <h1 className="font-heading text-4xl md:text-5xl font-bold">Rumtek Monastery</h1>
                 <p className="text-base md:text-lg text-gray-600 dark:text-gray-300">A serene monastery in Sikkim • Explore in 360°</p>
               </div>
             </div>

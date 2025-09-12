@@ -79,11 +79,7 @@ export default function Header() {
                     className="transition-all duration-300 group-hover:scale-110"
                     priority
                   />
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="absolute -inset-1 rounded-full bg-white/30 dark:bg-gray-30 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  />
+                  {/* Removed background shade of emblem */}
                 </div>
                 
                 <div className="flex flex-col">
@@ -119,6 +115,7 @@ export default function Header() {
                       href={item.href}
                       className={cn(
                         "relative px-3 py-2 text-sm font-medium rounded-md flex items-center gap-1.5 transition-colors group whitespace-nowrap",
+                        "text-gray-900 dark:text-white", // Always dark text for light theme, white for dark
                         isActive ? "text-primary" : "hover:text-primary"
                       )}
                     >
@@ -128,10 +125,8 @@ export default function Header() {
                           ? "bg-primary/10 dark:bg-primary/20" 
                           : "bg-transparent group-hover:bg-gray-100/80 dark:group-hover:bg-gray-800/50 transition-colors"
                       )}/>
-                      
                       {item.icon}
                       {item.name}
-                      
                       {isActive && (
                         <motion.span 
                           className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
@@ -236,7 +231,7 @@ export default function Header() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 overflow-hidden"
+              className="md:hidden backdrop-blur-xl text-gray-800 bg-white/90 dark:bg-gray-900/90 overflow-hidden"
             >
               <motion.div 
                 className="space-y-1 px-4 py-5"
