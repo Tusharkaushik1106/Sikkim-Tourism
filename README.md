@@ -1,63 +1,82 @@
-# 🏔️ Monastery360: A Digital Heritage Platform for Sikkim’s Monasteries  
 
-> A cross-platform tourism and heritage preservation platform built for **Smart India Hackathon 2025**.  
-> Monastery360 digitally preserves and promotes **Sikkim’s 200+ monasteries**, offering immersive experiences for tourists, researchers, and cultural enthusiasts.  
+# 🏔️ Monastery360: A Digital Heritage Platform for Sikkim’s Monasteries
+
+> **Smart India Hackathon 2025 Problem Statement Solution**
+
+Monastery360 is a cross-platform tourism and heritage preservation platform designed in direct response to the Smart India Hackathon (SIH) 2025 challenge:
+
+> **Problem Statement:**
+> Sikkim is home to over 200 monasteries, many of which date back to the 17th and 18th centuries. These monasteries are rich in history, architecture, and spiritual significance. While some efforts have been made to preserve murals and digitize rare documents, there is no unified digital platform that offers tourists and researchers immersive access to these cultural treasures.
+
+Monastery360 aims to digitally preserve and promote **Sikkim’s 200+ monasteries**, offering immersive experiences for tourists, researchers, and cultural enthusiasts through a unified digital platform.
+---
+
 
 ---
 
-## 📖 Background  
+## 📖 Background
 
-Sikkim is home to more than **200 monasteries**, many dating back to the **17th and 18th centuries**.  
-These monasteries are treasure troves of:  
-- Ancient murals and manuscripts  
-- Unique architectural styles  
-- Living traditions and spiritual practices  
+Sikkim’s monasteries are treasure troves of:
+- Ancient murals and manuscripts
+- Unique architectural styles
+- Living traditions and spiritual practices
 
-While some efforts exist to digitize rare documents, **no unified digital platform** currently provides immersive and interactive access to these cultural gems.  
-
----
-
-## 💡 Proposed Solution  
-
-**Monastery360** – a comprehensive **digital heritage platform** that integrates mobile, web, and AI technologies to:  
-
-- 🌐 **Offer immersive virtual monastery experiences**  
-- 📜 **Preserve endangered cultural assets** through digitization  
-- 🎧 **Guide tourists with smart, multilingual audio tours**  
-- 🗺️ **Promote tourism with maps, routes, and event calendars**  
-- 🤝 **Empower local communities** through participatory archiving  
+Despite some digitization efforts, **no unified digital platform** currently provides immersive and interactive access to these cultural gems for tourists, researchers, or the global community.
 
 ---
 
-## ✨ Key Features  
 
-### 🏯 Virtual Experiences  
-- 360° **panoramic virtual tours** of monasteries  
-- Narrated walkthroughs in **multiple languages**  
+## 💡 Proposed Solution
 
-### 🗺️ Travel & Exploration  
-- **Interactive map** with geo-tagged monasteries, nearby attractions, and travel routes  
-- **Smart Audio Guide App** – location-based narration via Bluetooth beacons or GPS  
-- **Offline Mode** for remote access  
+**Monastery360** is a comprehensive digital heritage platform that integrates mobile, web, and AI technologies to:
 
-### 📚 Cultural Heritage & Archives  
-- **Digital archives** of murals, manuscripts, and historical documents  
-- **AI-powered search** for quick categorization and discovery  
-
-### 🎉 Events & Community  
-- **Cultural calendar**: festivals, rituals, and monastery events  
-- **Tourist bookings & participation options**  
-- **Integration with local tourism services**  
+- 🌐 Offer immersive virtual monastery experiences
+- 📜 Preserve endangered cultural assets through digitization
+- 🎧 Guide tourists with smart, multilingual audio tours
+- 🗺️ Promote tourism with maps, routes, and event calendars
+- 🤝 Empower local communities through participatory archiving
 
 ---
 
-## 🏗️ Project Structure  
 
-SIH-2025/
-Monastery360/
-App/ # Flutter mobile app
-ml/ # Python ML backend
-web/ # Next.js web frontend
+## ✨ Key Features
+
+### 🏯 Virtual Tours & Experiences
+- 360° panoramic virtual tours of monastery interiors and surroundings
+- Narrated walkthroughs in multiple languages
+
+### 🗺️ Travel & Exploration
+- Interactive map: geo-tagged monastery locations, travel routes, and nearby attractions
+- Smart Audio Guide App: location-based audio guides using Bluetooth beacons or GPS
+- Offline mode for remote areas
+
+### 📚 Cultural Heritage & Archives
+- Digital archives: scanned manuscripts, murals, and historical documents
+- AI-powered search and categorization
+
+### 🎉 Events & Community
+- Cultural calendar: events, festivals, and rituals schedule
+- Booking and participation options for tourists
+- Integration with local transport and tourism services
+---
+
+## 🌍 Impact
+
+- Boosts tourism by making monasteries more accessible
+- Preserves endangered cultural assets digitally
+- Empowers local communities through participatory archiving
+- Supports educational and spiritual exploration globally
+
+---
+
+
+## 🏗️ Project Structure
+
+SIH 2025/
+Sikkim-Tourism/
+	App/         # Flutter mobile app
+	ml/          # Python ML backend
+	web/         # Next.js web frontend
 
 
 ---
@@ -71,39 +90,39 @@ web/ # Next.js web frontend
 
 ---
 
-## 🚀 Getting Started  
 
+## 🚀 Getting Started
 
-### 1. Flutter App  
+### 1. Flutter App
 
 ```bash
-cd SIH-2025/Monastery360/App
+cd SIH 2025/Sikkim-Tourism/App
 flutter pub get
 flutter run
+```
 
----
+- Configure Firebase by placing your `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) in the appropriate directories.
 
-ML Backend
+### 2. ML Backend
 
-cd SIH-2025/Monastery360/ml
+```bash
+cd SIH 2025/Sikkim-Tourism/ml
 python -m venv venv
-source venv/bin/activate  # (Linux/Mac)
-venv\Scripts\activate     # (Windows)
+venv\Scripts\activate  # (Windows)
 pip install -r requirements.txt
 python app.py
+```
 
----
+- Configure environment variables as per `example.env`.
+- Ensure MongoDB is running if required.
 
-Web Frontend
+### 3. Web Frontend
 
-cd SIH-2025/Monastery360/web/demo
+```bash
+cd SIH 2025/Sikkim-Tourism/web/demo
 npm install
 npm run dev
+```
 
-
-
----
-
-Do you also want me to **add badges at the very top** (like Flutter, Next.js, Python, License) to make it look even more professional for GitHub?
 
 ---
