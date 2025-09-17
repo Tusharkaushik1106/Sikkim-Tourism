@@ -73,6 +73,7 @@ web/ # Next.js web frontend
 
 ## 🚀 Getting Started  
 
+
 ### 1. Flutter App  
 
 ```bash
@@ -80,6 +81,7 @@ cd SIH-2025/Monastery360/App
 flutter pub get
 flutter run
 
+---
 
 ML Backend
 
@@ -90,6 +92,7 @@ venv\Scripts\activate     # (Windows)
 pip install -r requirements.txt
 python app.py
 
+---
 
 Web Frontend
 
@@ -102,3 +105,5 @@ npm run dev
 ---
 
 Do you also want me to **add badges at the very top** (like Flutter, Next.js, Python, License) to make it look even more professional for GitHub?
+
+---
