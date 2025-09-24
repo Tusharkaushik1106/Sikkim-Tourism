@@ -1,13 +1,13 @@
-'use client';
 
-import { useState, useEffect } from 'react';
+"use client";
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import BookingModal from '@/components/booking-modal';
 import { Calendar, Clock, MapPin, Users, Star, ArrowLeft, Ticket } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-export default function BookingPage() {
+function BookingPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const eventId = searchParams.get('eventId');
@@ -250,5 +250,13 @@ export default function BookingPage() {
         />
       </div>
     </div>
+  );
+}
+
+export default function BookingPage() {
+  return (
+    <Suspense>
+      <BookingPageInner />
+    </Suspense>
   );
 }
