@@ -1,9 +1,10 @@
 'use client'
 
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
-export default function BookRidePage() {
+// Separate the component that uses useSearchParams
+function BookRideContent() {
   const params = useSearchParams()
   const router = useRouter()
 
@@ -318,4 +319,41 @@ export default function BookRidePage() {
   )
 }
 
+// Loading fallback component
+function BookRideLoading() {
+  return (
+    <main className="min-h-screen pt-24 px-4">
+      <div className="max-w-5xl mx-auto">
+        <div className="rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white p-8 mb-8">
+          <div className="animate-pulse">
+            <div className="h-4 bg-white/20 rounded w-24 mb-4"></div>
+            <div className="h-10 bg-white/20 rounded w-64 mb-2"></div>
+            <div className="h-4 bg-white/20 rounded w-96"></div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+            <div className="space-y-3">
+              <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}
 
+// Main component with Suspense wrapper
+export default function BookRidePage() {
+  return (
+    <Suspense fallback={<BookRideLoading />}>
+      <BookRideContent />
+    </Suspense>
+  )
+}

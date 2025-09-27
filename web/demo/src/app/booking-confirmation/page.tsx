@@ -1,11 +1,12 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { CheckCircle, Calendar, Clock, MapPin, Users, CreditCard, Download, Share2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-export default function BookingConfirmation() {
+// Separate component that uses useSearchParams
+function BookingConfirmationContent() {
   const searchParams = useSearchParams();
   const [booking, setBooking] = useState<any>(null);
   const [event, setEvent] = useState<any>(null);
@@ -244,5 +245,86 @@ export default function BookingConfirmation() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component for the booking confirmation
+function BookingConfirmationLoading() {
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4 max-w-3xl">
+        {/* Loading Header */}
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-6 text-center">
+          <div className="animate-pulse">
+            <div className="mx-auto h-16 w-16 bg-gray-200 rounded-full mb-4"></div>
+            <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-80 mx-auto"></div>
+          </div>
+        </div>
+
+        {/* Loading Content */}
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-gray-200 rounded w-48"></div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="h-6 bg-gray-200 rounded w-40"></div>
+                <div className="space-y-3">
+                  <div className="flex gap-3">
+                    <div className="h-5 w-5 bg-gray-200 rounded"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-gray-200 rounded w-32 mb-1"></div>
+                      <div className="h-3 bg-gray-200 rounded w-24"></div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="h-5 w-5 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded w-20"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="h-6 bg-gray-200 rounded w-40"></div>
+                <div className="space-y-3">
+                  <div className="h-4 bg-gray-200 rounded w-24"></div>
+                  <div className="h-4 bg-gray-200 rounded w-32"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment section loading */}
+            <div className="pt-6 border-t border-gray-200">
+              <div className="h-6 bg-gray-200 rounded w-40 mb-4"></div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="h-5 bg-gray-200 rounded w-32 mb-2"></div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="h-12 bg-gray-200 rounded"></div>
+                  <div className="h-12 bg-gray-200 rounded"></div>
+                  <div className="h-12 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Loading buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="h-12 bg-gray-200 rounded flex-1"></div>
+          <div className="h-12 bg-gray-200 rounded flex-1"></div>
+          <div className="h-12 bg-gray-200 rounded flex-1"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main component with Suspense wrapper
+export default function BookingConfirmation() {
+  return (
+    <Suspense fallback={<BookingConfirmationLoading />}>
+      <BookingConfirmationContent />
+    </Suspense>
   );
 }

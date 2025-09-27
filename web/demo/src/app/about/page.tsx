@@ -18,34 +18,35 @@ interface GitHubProfile {
 
 const teamMembers = [
   {
+    name: "Purav Bhatt",
+    github: "puravbhatt0504",
+    role: "Team Lead & AR developer"
+  },
+  {
     name: "Tushar Kaushik",
     github: "TusharKaushik1106",
-    role: "Team Lead & Full Stack Developer"
+    role: "Full Stack Developer"
   },
   {
     name: "Shreya Jha",
     github: "whoshrey",
-    role: "Frontend Developer"
+    role: "ML Engineer & Frontend Developer"
   },
   {
     name: "Raghav Aggarwal",
     github: "Raghavaggarwal2",
-    role: "Backend Developer"
+    role: "Backend Developer & ML Engineer"
   },
-  {
-    name: "Purav Bhatt",
-    github: "puravbhatt0504",
-    role: "UI/UX Designer"
-  },
+  
   {
     name: "Piyush Thakur",
     github: "Piyush-Fr",
-    role: "Full Stack Developer"
+    role: "Flutter Developer"
   },
   {
     name: "Simran Rawat",
     github: "SiRa111",
-    role: "Frontend Developer"
+    role: "ML Engineer & Data Scientist"
   }
 ];
 

@@ -20,10 +20,24 @@ export async function GET(request: Request) {
 
     // Add additional September events for current year
     if (year === new Date().getFullYear()) {
-      const septemberEventsWithYear = additionalSeptemberEvents.map(event => ({
+      // Map additionalSeptemberEvents to match CulturalEvent type
+      const allowedCategories = ["Festival", "Religious", "Cultural", "Harvest", "Holiday"];
+      const categoryMap: Record<string, CulturalEvent["category"]> = {
+        Festival: "Festival",
+        Religious: "Religious",
+        Cultural: "Cultural",
+        Harvest: "Harvest",
+        Holiday: "Holiday",
+        Food: "Cultural",
+        Art: "Cultural",
+        Dance: "Cultural"
+      };
+      const septemberEventsWithYear: CulturalEvent[] = additionalSeptemberEvents.map(event => ({
         ...event,
-        date: event.date.replace('2024', year.toString()),
-        id: `${year}-${event.id}`
+        date: event.date.replace("2024", year.toString()),
+        id: `${year}-${event.id}`,
+        category: categoryMap[event.category] || "Cultural",
+        monthDay: (typeof event.monthDay === "number" ? (event.date.slice(5)) : event.monthDay)
       }));
       events.push(...septemberEventsWithYear);
     }
