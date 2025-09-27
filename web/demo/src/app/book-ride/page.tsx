@@ -93,7 +93,12 @@ function BookRideContent() {
   const handlePay = (e: React.FormEvent) => {
     e.preventDefault()
     // Demo-only: simulate payment
-    setTimeout(() => setStep('success'), 600)
+    setTimeout(() => {
+  router.push(
+    `/confirmation?fare=${numericFare}&pickup=${encodeURIComponent(pickup)}&dropoff=${encodeURIComponent(dropoff)}&time=${rideTime}&date=${rideDate.toDateString()}`
+  )
+}, 600)
+
   }
 
   return (

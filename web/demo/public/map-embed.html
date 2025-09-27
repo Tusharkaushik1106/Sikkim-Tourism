@@ -383,7 +383,8 @@ async function openFarePopup(monasteryObj, attractionObj) {
         const distanceKm = (route.distance / 1000);
         const timeMin = Math.round(route.duration / 60);
         const cost = Math.round(modeProfiles.taxi.baseCost + modeProfiles.taxi.perKm * distanceKm);
-        const bookUrl = `/book-ride?pickupLat=${encodeURIComponent(start[0])}&pickupLng=${encodeURIComponent(start[1])}&destLat=${encodeURIComponent(end[0])}&destLng=${encodeURIComponent(end[1])}&distanceKm=${encodeURIComponent(distanceKm.toFixed(2))}&timeMin=${encodeURIComponent(timeMin)}&fare=${encodeURIComponent(cost)}&from=${encodeURIComponent(userPickup ? 'Current Location' : monasteryObj.name.en)}&to=${encodeURIComponent(attractionObj.name.en)}`;
+        const bookUrl = `/book?pickupLat=${encodeURIComponent(start[0])}&pickupLng=${encodeURIComponent(start[1])}&destLat=${encodeURIComponent(end[0])}&destLng=${encodeURIComponent(end[1])}&distanceKm=${encodeURIComponent(distanceKm.toFixed(2))}&timeMin=${encodeURIComponent(timeMin)}&fare=${encodeURIComponent(cost)}&from=${encodeURIComponent(userPickup ? 'Current Location' : monasteryObj.name.en)}&to=${encodeURIComponent(attractionObj.name.en)}`;
+
         const content = `
           <div style=\"font-family:Inter,system-ui,Arial;\"> 
             <div style=\"font-weight:700;margin-bottom:6px;\">${lang.estimates_title}</div>
@@ -430,14 +431,17 @@ function setTheme(theme) {
 
 // TILE FIX: Using more reliable Stadia (Stamen) tiles for both light and dark modes
 function updateMapTiles(theme) {
-    const lightTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png';
-    const darkTileUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
+    const apiKey = 'ea504039-6125-4e9d-a665-e01464af57a9'; // Replace with your actual API key
+    const lightTileUrl = `https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=${apiKey}`;
+    const darkTileUrl = `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${apiKey}`;
+    
     const attribution = '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>';
     
     if (window.tileLayer) map.removeLayer(window.tileLayer);
     
     window.tileLayer = L.tileLayer(theme === 'dark' ? darkTileUrl : lightTileUrl, { attribution, maxZoom: 20 }).addTo(map);
 }
+
 
 /* ------------------------------
    5. INITIALIZATION & EVENT HANDLING

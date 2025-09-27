@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+  import { NextResponse } from 'next/server';
 import { generateEventsForYear, CulturalEvent } from '@/lib/events';
 import { additionalSeptemberEvents } from '@/lib/september-events';
 
