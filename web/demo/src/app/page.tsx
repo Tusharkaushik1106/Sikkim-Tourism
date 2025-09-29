@@ -3,7 +3,7 @@ import HeroSection from '@/components/hero-section'
 import FeatureSection from '@/components/feature-section'
 import StatsSection from '@/components/stats-section'
 import TestimonialsSection from '@/components/testimonials-section'
-import CtaSection from '@/components/cta-section'
+
 import Footer from '@/components/footer'
 
 import ChatbotPopup from '@/components/chatbot-popup';
@@ -17,7 +17,7 @@ export default function Home() {
         <FeatureSection />
         <StatsSection />
         <TestimonialsSection />
-        <CtaSection />
+        
       </div>
 
       {/* <div className="container mx-auto px-4 py-12">
