@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, TargetPlatform;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter_google_street_view/flutter_google_street_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class StreetViewExample extends StatefulWidget {
@@ -11,241 +12,165 @@ class StreetViewExample extends StatefulWidget {
 }
 
 class _StreetViewExampleState extends State<StreetViewExample> {
-  GoogleMapController? mapController;
-  bool _isMapReady = false;
-  String? _errorMessage;
-  bool _isLoading = true;
-  bool _isDisposed = false;
+  GoogleMapController? _mapController;
+  String? _mapStyle;
   bool _locationPermissionGranted = false;
-  Timer? _cleanupTimer;
+  String? _error;
+  bool _loading = true;
+  Timer? _watchdog;
+
+  static const LatLng _sikkimCenter = LatLng(27.5330, 88.5122); // Near Gangtok
+
+  final Set<Marker> _markers = <Marker>{
+    const Marker(
+      markerId: MarkerId('gangtok'),
+      position: LatLng(27.3314, 88.6138),
+      infoWindow: InfoWindow(title: 'Gangtok', snippet: 'Capital of Sikkim'),
+    ),
+    const Marker(
+      markerId: MarkerId('tsomgo'),
+      position: LatLng(27.3744, 88.7639),
+      infoWindow: InfoWindow(
+        title: 'Tsomgo Lake',
+        snippet: 'High altitude lake',
+      ),
+    ),
+    const Marker(
+      markerId: MarkerId('pelling'),
+      position: LatLng(27.3150, 88.2410),
+      infoWindow: InfoWindow(
+        title: 'Pelling',
+        snippet: 'Views of Kanchenjunga',
+      ),
+    ),
+    const Marker(
+      markerId: MarkerId('yuksom'),
+      position: LatLng(27.3741, 88.2586),
+      infoWindow: InfoWindow(
+        title: 'Yuksom',
+        snippet: 'Historic first capital',
+      ),
+    ),
+    const Marker(
+      markerId: MarkerId('rumtek'),
+      position: LatLng(27.3216, 88.6129),
+      infoWindow: InfoWindow(title: 'Rumtek Monastery'),
+    ),
+  };
 
   @override
   void initState() {
     super.initState();
+    _loadStyle();
     _requestLocationPermission();
-    _startCleanupTimer();
-  }
-
-  @override
-  void dispose() {
-    _isDisposed = true;
-    _cleanupTimer?.cancel();
-    mapController?.dispose();
-    super.dispose();
-  }
-
-  void _startCleanupTimer() {
-    // Periodic cleanup to prevent buffer accumulation
-    _cleanupTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (_isDisposed) {
-        timer.cancel();
-        return;
-      }
-      _performCleanup();
+    // Failsafe: stop loading spinner if map creation stalls
+    _watchdog = Timer(const Duration(seconds: 10), () {
+      if (mounted && _loading) setState(() => _loading = false);
     });
   }
 
-  void _performCleanup() {
-    // Force garbage collection to free up graphics buffers
-    if (mounted && !_isDisposed) {
-      // This helps prevent buffer accumulation
-      SystemChannels.platform.invokeMethod('System.gc');
+  Future<void> _loadStyle() async {
+    try {
+      final style = await rootBundle.loadString('assets/map/style.json');
+      if (mounted) setState(() => _mapStyle = style);
+    } catch (_) {
+      // style is optional; ignore errors
     }
   }
 
   Future<void> _requestLocationPermission() async {
     try {
-      // Request location permission
-      var status = await Permission.location.request();
-      
-      if (mounted) {
-        setState(() {
-          _locationPermissionGranted = status.isGranted;
-          if (!_locationPermissionGranted) {
-            _errorMessage = 'Location permission is required for Google Maps to work properly. Please grant permission in settings.';
-          }
-        });
-      }
+      final status = await Permission.location.request();
+      if (mounted)
+        setState(() => _locationPermissionGranted = status.isGranted);
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = 'Error requesting location permission: $e';
-        });
-      }
+      if (mounted) setState(() => _error = 'Permission error: $e');
     }
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    if (_isDisposed) return;
-    
+  void _onMapCreated(GoogleMapController controller) async {
+    _mapController = controller;
     try {
-      mapController = controller;
-      if (mounted) {
-        setState(() {
-          _isMapReady = true;
-          _isLoading = false;
-          _errorMessage = null;
-        });
-        
-        // Safely animate camera with error handling
-        _animateToLocation();
+      if (_mapStyle != null) {
+        await _mapController!.setMapStyle(_mapStyle);
       }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = 'Error initializing map: $e';
-          _isLoading = false;
-        });
-      }
+    } catch (_) {
+      // Ignore styling errors
     }
+    if (mounted) setState(() => _loading = false);
   }
 
-  void _animateToLocation() {
-    if (mapController != null && _isMapReady) {
-      try {
-        mapController!.animateCamera(
-          CameraUpdate.newCameraPosition(
-            const CameraPosition(
-              target: LatLng(27.7172, 88.4543), // Sikkim coordinates
-              zoom: 15.0,
-              bearing: 0.0,
-              tilt: 0.0,
-            ),
-          ),
-        );
-      } catch (e) {
-        setState(() {
-          _errorMessage = 'Error animating camera: $e';
-        });
-      }
-    }
+  Future<void> _recenter() async {
+    if (_mapController == null) return;
+    await _mapController!.animateCamera(
+      CameraUpdate.newCameraPosition(
+        const CameraPosition(
+          target: _sikkimCenter,
+          zoom: 8.8,
+          tilt: 0,
+          bearing: 0,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool useLiteMode = defaultTargetPlatform == TargetPlatform.android;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sikkim Tourism Map'),
-        backgroundColor: Colors.green[700],
+        title: const Text('Sikkim Map'),
+        backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: const CameraPosition(
-              target: LatLng(27.7172, 88.4543), // Sikkim coordinates
-              zoom: 12.0,
+              target: _sikkimCenter,
+              zoom: 8.8,
             ),
-            markers: {
-              const Marker(
-                markerId: MarkerId('sikkim'),
-                position: LatLng(27.7172, 88.4543),
-                infoWindow: InfoWindow(
-                  title: 'Sikkim',
-                  snippet: 'Beautiful Himalayan State',
-                ),
-              ),
-            },
-            // Aggressive buffer overflow prevention settings
+            markers: _markers,
             myLocationEnabled: _locationPermissionGranted,
-            myLocationButtonEnabled: _locationPermissionGranted,
-            zoomControlsEnabled: true,
-            mapType: MapType.normal,
-            // Disable all heavy rendering features to prevent buffer overflow
-            compassEnabled: false,
+            myLocationButtonEnabled: false,
             mapToolbarEnabled: false,
-            buildingsEnabled: false,
+            zoomControlsEnabled: false,
             trafficEnabled: false,
-            // Disable 3D features that consume more buffers
+            buildingsEnabled: false,
             tiltGesturesEnabled: false,
-            rotateGesturesEnabled: false, // Disable rotation to reduce buffer usage
-            scrollGesturesEnabled: true,
-            zoomGesturesEnabled: true,
-            // Additional buffer optimization settings
-            liteModeEnabled: false, // Keep full mode but with reduced features
-            indoorViewEnabled: false, // Disable indoor maps
-            padding: const EdgeInsets.all(0), // No padding to reduce rendering area
+            compassEnabled: false,
+            indoorViewEnabled: false,
+            mapType: MapType.normal,
+            liteModeEnabled: useLiteMode,
           ),
-          if (_errorMessage != null)
+          if (_loading) const Center(child: CircularProgressIndicator()),
+          if (_error != null)
             Positioned(
-              top: 16,
               left: 16,
               right: 16,
+              bottom: 16,
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.red[100],
+                  color: Colors.red[400],
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.red[300]!),
                 ),
-                child: Row(
-                  children: [
-                    Icon(Icons.error, color: Colors.red[700]),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        _errorMessage!,
-                        style: TextStyle(color: Colors.red[700]),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        setState(() {
-                          _errorMessage = null;
-                        });
-                      },
-                    ),
-                    if (_errorMessage != null && _errorMessage!.contains('permission'))
-                      IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () {
-                          openAppSettings();
-                        },
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          if (_isLoading)
-            Container(
-              color: Colors.white,
-              child: const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text(
-                      'Loading Google Maps...',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Please ensure you have internet connection',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  _error!,
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),
         ],
       ),
-      floatingActionButton: !_locationPermissionGranted
-          ? FloatingActionButton(
-              onPressed: _requestLocationPermission,
-              backgroundColor: Colors.green[700],
-              child: const Icon(Icons.location_on, color: Colors.white),
-              tooltip: 'Request Location Permission',
-            )
-          : null,
+      floatingActionButton: FloatingActionButton(
+        onPressed: _recenter,
+        backgroundColor: Colors.white,
+        child: const Icon(Icons.center_focus_strong, color: Colors.black),
+        tooltip: 'Recenter on Sikkim',
+      ),
     );
   }
 }
